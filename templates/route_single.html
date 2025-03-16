@@ -1,0 +1,393 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block content %}
+
+
+<section id="features" class="py-5 py-lg-7 mt-5" >
+
+    <div class="container">
+        <!-- Route Details Card -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">Route Details</h6>
+                <div>
+                    <!-- <a href="{% url 'edit_route' route_id=route.id %}" class="btn btn-primary btn-sm">
+                    <i class="fas fa-edit"></i> Edit Route
+                </a>
+                <a href="{% url 'route_list' %}" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-arrow-left"></i> Back to Routes
+                </a> -->
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="card mb-3">
+                            <div class="card-header bg-primary text-white">
+                                <h6 class="m-0">Route Number</h6>
+                            </div>
+                            <div class="card-body">
+                                <h2 class="text-center">{{ route.route_number }}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="card mb-3">
+                            <div class="card-header bg-primary text-white">
+                                <h6 class="m-0">Route Information</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <p><strong>Route Name:</strong> {{ route.route_name }}</p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <p><strong>Start Point:</strong> {{ route.start_point }}</p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <p><strong>End Point:</strong> {{ route.end_point }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Route Visualization -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Route Path Visualization</h6>
+            </div>
+            <div class="card-body">
+                <div class="route-visualization">
+                    <div class="d-flex align-items-center route-line">
+                        {% for stop in stops %}
+                        <div class="route-stop">
+                            <div
+                                class="stop-point {% if forloop.first %}start-point{% elif forloop.last %}end-point{% endif %}">
+                            </div>
+                            <div class="stop-name">{{ stop.stop_name }}</div>
+                            <div class="stop-number">Stop {{ stop.sequence_number }}</div>
+                        </div>
+                        {% if not forloop.last %}
+                        <div class="route-segment">
+                            <div class="segment-line"></div>
+                            {% for segment in segments %}
+                            {% if segment.start_stop.id == stop.id %}
+                            <div class="segment-info">
+                                <div>{{ segment.distance }} km</div>
+                                <div>₹{{ segment.base_fare }}</div>
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Bus Stops Table -->
+            <div class="col-md-6">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Bus Stops</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="stopsTable" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Sequence</th>
+                                        <th>Stop Name</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for stop in stops %}
+                                    <tr>
+                                        <td>{{ stop.sequence_number }}</td>
+                                        <td>{{ stop.stop_name }}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="2" class="text-center">No stops added yet.</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Route Segments Table -->
+            <div class="col-md-6">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Route Segments</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="segmentsTable" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>From</th>
+                                        <th>To</th>
+                                        <th>Distance</th>
+                                        <th>Base Fare</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for segment in segments %}
+                                    <tr>
+                                        <td>{{ segment.start_stop.stop_name }}</td>
+                                        <td>{{ segment.end_stop.stop_name }}</td>
+                                        <td>{{ segment.distance }} km</td>
+                                        <td>₹{{ segment.base_fare }}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="4" class="text-center">No segments added yet.</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fare Calculator Card -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Fare Calculator</h6>
+            </div>
+            <div class="card-body">
+                <form id="fareCalculator" class="mb-4">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label for="fromStop">From Stop</label>
+                            <select class="form-control" id="fromStop">
+                                <option value="">Select From Stop</option>
+                                {% for stop in stops %}
+                                <option value="{{ stop.stop_name }}">{{ stop.stop_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="toStop">To Stop</label>
+                            <select class="form-control" id="toStop">
+                                <option value="">Select To Stop</option>
+                                {% for stop in stops %}
+                                <option value="{{ stop.stop_name }}">{{ stop.stop_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="passengerType">Passenger Type</label>
+                            <select class="form-control" id="passengerType">
+                                <option value="regular">Regular</option>
+                                <option value="student">Student (50% off)</option>
+                                <option value="senior_citizen">Senior Citizen (30% off)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label>&nbsp;</label>
+                            <button type="button" id="calculateFare" class="btn btn-primary btn-block">Calculate
+                                Fare</button>
+                        </div>
+                    </div>
+                </form>
+                <div id="fareResult" class="alert alert-info d-none">
+                    <h4 class="alert-heading">Calculated Fare</h4>
+                    <p id="fareAmount">--</p>
+                    <hr>
+                    <p class="mb-0">This fare includes applicable discounts based on passenger type.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<style>
+    .route-visualization {
+        overflow-x: auto;
+        padding: 20px 0;
+    }
+
+    .route-line {
+        min-width: 100%;
+    }
+
+    .route-stop {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 10px;
+        min-width: 100px;
+    }
+
+    .stop-point {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background-color: #4e73df;
+        margin-bottom: 5px;
+    }
+
+    .start-point {
+        background-color: #1cc88a;
+    }
+
+    .end-point {
+        background-color: #e74a3b;
+    }
+
+    .stop-name {
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .stop-number {
+        font-size: 12px;
+        color: #6c757d;
+    }
+
+    .route-segment {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex-grow: 1;
+        min-width: 50px;
+    }
+
+    .segment-line {
+        height: 2px;
+        background-color: #4e73df;
+        width: 100%;
+        margin-bottom: 5px;
+    }
+
+    .segment-info {
+        font-size: 12px;
+        text-align: center;
+        color: #6c757d;
+    }
+</style>
+
+{% block extra_js %}
+<script>
+    $(document).ready(function () {
+        // Initialize datatables
+        $('#stopsTable').DataTable({
+            "order": [[0, "asc"]],
+            "pageLength": 10,
+            "lengthMenu": [[5, 10, 25, -1], [5, 10, 25, "All"]]
+        });
+
+        $('#segmentsTable').DataTable({
+            "pageLength": 10,
+            "lengthMenu": [[5, 10, 25, -1], [5, 10, 25, "All"]]
+        });
+
+        // Fare calculator
+        $('#calculateFare').click(function () {
+            var fromStop = $('#fromStop').val();
+            var toStop = $('#toStop').val();
+            var passengerType = $('#passengerType').val();
+
+            if (!fromStop || !toStop) {
+                alert('Please select both from and to stops');
+                return;
+            }
+
+            if (fromStop === toStop) {
+                alert('From and To stops cannot be the same');
+                return;
+            }
+
+            // Calculate fare
+            calculateFare(fromStop, toStop, passengerType);
+        });
+
+        function calculateFare(fromStop, toStop, passengerType) {
+            // This is a client-side simulation of the fare calculation
+            // In a real implementation, you would make an AJAX call to the server
+
+            // Get the stops by name
+            var stops = [];
+            {% for stop in stops %}
+            stops.push({
+                name: "{{ stop.stop_name }}",
+                sequence: {{ stop.sequence_number }}
+    });
+    {% endfor %}
+
+    // Find the sequence numbers
+    var fromStopObj = stops.find(s => s.name === fromStop);
+    var toStopObj = stops.find(s => s.name === toStop);
+
+    if (!fromStopObj || !toStopObj) {
+        alert('Invalid stops selected');
+        return;
+    }
+
+    // Ensure from comes before to
+    if (fromStopObj.sequence > toStopObj.sequence) {
+        var temp = fromStop;
+        fromStop = toStop;
+        toStop = temp;
+
+        temp = fromStopObj;
+        fromStopObj = toStopObj;
+        toStopObj = temp;
+    }
+
+    // Get all segments between these stops
+    var segments = [];
+    {% for segment in segments %}
+    segments.push({
+        startSequence: {{ segment.start_stop.sequence_number }},
+        endSequence: {{ segment.end_stop.sequence_number }},
+        fare: {{ segment.base_fare }},
+        distance: {{ segment.distance }}
+                });
+    {% endfor %}
+
+    var totalFare = 0;
+    var totalDistance = 0;
+
+    segments.forEach(function (segment) {
+        if (segment.startSequence >= fromStopObj.sequence &&
+            segment.endSequence <= toStopObj.sequence) {
+            totalFare += parseFloat(segment.fare);
+            totalDistance += parseFloat(segment.distance);
+        }
+    });
+
+    // Apply discount
+    if (passengerType === 'student') {
+        totalFare = totalFare * 0.5; // 50% discount
+    } else if (passengerType === 'senior_citizen') {
+        totalFare = totalFare * 0.7; // 30% discount
+    }
+
+    // Display result
+    $('#fareAmount').html(`
+                <strong>₹${totalFare.toFixed(2)}</strong> for a journey of <strong>${totalDistance.toFixed(2)} km</strong><br>
+                From: ${fromStop} To: ${toStop}<br>
+                Passenger Type: ${passengerType.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+            `);
+    $('#fareResult').removeClass('d-none');
+        }
+    });
+</script>
+{% endblock %}
+
+
+
+{% endblock %}

@@ -1,0 +1,210 @@
+{% extends 'admin/index.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Edit Route: {{ route.route_number }} - {{ route.route_name }}</h6>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="m-0 font-weight-bold">Route Details</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-3 mb-3">
+                                        <label for="{{ form.route_number.id_for_label }}">Route Number</label>
+                                        {{ form.route_number }}
+                                        {% if form.route_number.errors %}
+                                            <div class="text-danger">{{ form.route_number.errors }}</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="{{ form.route_name.id_for_label }}">Route Name</label>
+                                        {{ form.route_name }}
+                                        {% if form.route_name.errors %}
+                                            <div class="text-danger">{{ form.route_name.errors }}</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="{{ form.start_point.id_for_label }}">Start Point</label>
+                                        {{ form.start_point }}
+                                        {% if form.start_point.errors %}
+                                            <div class="text-danger">{{ form.start_point.errors }}</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="{{ form.end_point.id_for_label }}">End Point</label>
+                                        {{ form.end_point }}
+                                        {% if form.end_point.errors %}
+                                            <div class="text-danger">{{ form.end_point.errors }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h6 class="m-0 font-weight-bold">Bus Stops</h6>
+                                <button type="button" class="btn btn-sm btn-primary" id="add-stop">Add Stop</button>
+                            </div>
+                            <div class="card-body">
+                                {{ stop_formset.management_form }}
+                                <table class="table table-bordered" id="stops-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Stop Name</th>
+                                            <th>Sequence Number</th>
+                                            <th>Delete</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for stop_form in stop_formset %}
+                                            <tr class="stop-form">
+                                                <td>
+                                                    {{ stop_form.id }}
+                                                    {{ stop_form.stop_name }}
+                                                    {% if stop_form.stop_name.errors %}
+                                                        <div class="text-danger">{{ stop_form.stop_name.errors }}</div>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {{ stop_form.sequence_number }}
+                                                    {% if stop_form.sequence_number.errors %}
+                                                        <div class="text-danger">{{ stop_form.sequence_number.errors }}</div>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {{ stop_form.DELETE }}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h6 class="m-0 font-weight-bold">Route Segments</h6>
+                                <button type="button" class="btn btn-sm btn-primary" id="add-segment">Add Segment</button>
+                            </div>
+                            <div class="card-body">
+                                {{ segment_formset.management_form }}
+                                <table class="table table-bordered" id="segments-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Start Stop</th>
+                                            <th>End Stop</th>
+                                            <th>Base Fare</th>
+                                            <th>Distance (km)</th>
+                                            <th>Delete</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for segment_form in segment_formset %}
+                                            <tr class="segment-form">
+                                                <td>
+                                                    {{ segment_form.id }}
+                                                    {{ segment_form.start_stop }}
+                                                    {% if segment_form.start_stop.errors %}
+                                                        <div class="text-danger">{{ segment_form.start_stop.errors }}</div>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {{ segment_form.end_stop }}
+                                                    {% if segment_form.end_stop.errors %}
+                                                        <div class="text-danger">{{ segment_form.end_stop.errors }}</div>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {{ segment_form.base_fare }}
+                                                    {% if segment_form.base_fare.errors %}
+                                                        <div class="text-danger">{{ segment_form.base_fare.errors }}</div>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {{ segment_form.distance }}
+                                                    {% if segment_form.distance.errors %}
+                                                        <div class="text-danger">{{ segment_form.distance.errors }}</div>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {{ segment_form.DELETE }}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <a href="{% url 'route_detail' route_id=route.id %}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    $(document).ready(function() {
+        // Add more stop forms
+        $('#add-stop').click(function() {
+            var formCount = parseInt($('#id_stops-TOTAL_FORMS').val());
+            var row = $('.stop-form').last().clone(true);
+            
+            // Update form index
+            row.find(':input').each(function() {
+                var name = $(this).attr('name').replace('-' + (formCount-1) + '-', '-' + formCount + '-');
+                var id = 'id_' + name;
+                $(this).attr({'name': name, 'id': id}).val('').removeAttr('checked');
+            });
+            
+            // Append new form
+            $('#stops-table tbody').append(row);
+            $('#id_stops-TOTAL_FORMS').val(formCount + 1);
+        });
+        
+        // Add more segment forms
+        $('#add-segment').click(function() {
+            var formCount = parseInt($('#id_segments-TOTAL_FORMS').val());
+            var row = $('.segment-form').last().clone(true);
+            
+            // Update form index
+            row.find(':input').each(function() {
+                var name = $(this).attr('name').replace('-' + (formCount-1) + '-', '-' + formCount + '-');
+                var id = 'id_' + name;
+                $(this).attr({'name': name, 'id': id}).val('').removeAttr('checked');
+            });
+            
+            // Append new form
+            $('#segments-table tbody').append(row);
+            $('#id_segments-TOTAL_FORMS').val(formCount + 1);
+        });
+    });
+</script>
+{% endblock %}
+{% endblock %}

@@ -1,0 +1,187 @@
+{% extends 'index.html' %}
+{% block content %}
+<style>
+    input, select{
+        border: .5px solid gray !important;
+    }
+</style>
+
+<section id="features" class="py-5 py-lg-7">
+
+    <div class="container mt-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">Apply for Bus Pass</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data" class="buspass-form">
+                    {% csrf_token %}
+
+                    {% if messages %}
+                    <div class="alert alert-success">
+                        {% for message in messages %}
+                        {{ message }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle"></i> Your application will be reviewed by an
+                                administrator. You will be notified once your application is approved.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Route Selection -->
+                    <div class="mb-4">
+                        <h5>Route Information</h5>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.bus_route.id_for_label }}" class="form-label">Bus Route*</label>
+                                {{ form.bus_route }}
+                                {% if form.bus_route.errors %}
+                                <div class="text-danger">{{ form.bus_route.errors }}</div>
+                                {% endif %}
+                                <div class="form-text">Select the bus route for your pass</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.pass_validity_in_days.id_for_label }}" class="form-label">Pass Needed Days *</label>
+                                {{ form.pass_validity_in_days }}
+                                {% if form.bus_route.errors %}
+                                <div class="text-danger">{{ form.pass_validity_in_days.errors }}</div>
+                                {% endif %}
+                                <div class="form-text">Enter Number Of Days for your pass</div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.from_stop.id_for_label }}" class="form-label">From Stop*</label>
+                                {{ form.from_stop }}
+                                {% if form.from_stop.errors %}
+                                <div class="text-danger">{{ form.from_stop.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.to_stop.id_for_label }}" class="form-label">To Stop*</label>
+                                {{ form.to_stop }}
+                                {% if form.to_stop.errors %}
+                                <div class="text-danger">{{ form.to_stop.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Personal Information -->
+                    <div class="mb-4">
+                        <h5>Passenger Information</h5>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label for="{{ form.profession.id_for_label }}"
+                                    class="form-label">Profession/Category*</label>
+                                {{ form.profession }}
+                                {% if form.profession.errors %}
+                                <div class="text-danger">{{ form.profession.errors }}</div>
+                                {% endif %}
+                                <div class="form-text">Your profession determines the applicable discount</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Documents -->
+                    <div class="mb-4">
+                        <h5>Required Documents</h5>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.photo.id_for_label }}" class="form-label">Your Photo*</label>
+                                {{ form.photo }}
+                                {% if form.photo.errors %}
+                                <div class="text-danger">{{ form.photo.errors }}</div>
+                                {% endif %}
+                                <div class="form-text">Upload a recent passport-sized photo</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.id_proof.id_for_label }}" class="form-label">ID Proof*</label>
+                                {{ form.id_proof }}
+                                {% if form.id_proof.errors %}
+                                <div class="text-danger">{{ form.id_proof.errors }}</div>
+                                {% endif %}
+                                <div class="form-text">Upload a valid ID proof (Aadhar, PAN, etc.)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Terms and Conditions -->
+                    <div class="mb-4">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="terms" required>
+                            <label class="form-check-label" for="terms">
+                                I agree to the terms and conditions of the bus pass system.
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary px-5">Submit Application</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!-- JavaScript for dynamic form -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    const routeSelect = document.getElementById('{{ form.bus_route.id_for_label }}');
+    const fromStopSelect = document.getElementById('{{ form.from_stop.id_for_label }}');
+    const toStopSelect = document.getElementById('{{ form.to_stop.id_for_label }}');
+
+    routeSelect.addEventListener('change', function () {
+        const routeId = this.value;
+
+        fromStopSelect.innerHTML = '<option value="">Select From Stop</option>';
+        toStopSelect.innerHTML = '<option value="">Select To Stop</option>';
+
+        if (routeId) {
+            fetch(`/api/route/${routeId}/stops/`)
+                .then(response => response.json())
+                .then(stops => {
+                    stops.forEach(stop => {
+                        let option = new Option(stop.stop_name, stop.id);
+                        fromStopSelect.add(option.cloneNode(true));
+                        toStopSelect.add(option);
+                    });
+                })
+                .catch(error => console.error('Error loading stops:', error));
+        }
+    });
+
+
+        // Validation for from/to stops
+        toStopSelect.addEventListener('change', function () {
+            const fromStopValue = fromStopSelect.value;
+            const toStopValue = this.value;
+
+            if (fromStopValue && toStopValue) {
+                const fromStopIndex = [...fromStopSelect.options]
+                    .findIndex(option => option.value === fromStopValue);
+                const toStopIndex = [...toStopSelect.options]
+                    .findIndex(option => option.value === toStopValue);
+
+                // Check if from stop comes before to stop
+                if (fromStopIndex >= toStopIndex) {
+                    alert('The destination stop must come after the starting stop.');
+                    this.value = '';
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends 'index.html' %}
+{% block content %}
+
+<section id="features" class="py-5 py-lg-7">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="badge bg-primary-light text-primary px-3 py-2 mb-2">APPLICATION STATUS</span>
+            <h2 class="fw-bold mb-3">Bus Pass Application</h2>
+            {% if messages %}
+                    <div class="alert alert-success">
+                        {% for message in messages %}
+                        {{ message }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+            <p class="text-gray mx-auto" style="max-width: 600px;">You Can apply bus pass form here and view application status</p>
+         <br>
+            <a href="{% url 'buspass_apply' %}" class="btn btn-outline-primary">Apply For New Pass</a>
+            <a href="{% url 'approved_buss_pass' %}" class="btn btn-primary">Approved Bus Pass</a>
+        
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+        
+                        <th>Approval Status</th>
+                        <th>Date Applied</th>
+                        
+                        <th>Bus Route</th>
+                        <th>From Stop</th>
+                        <th>To Stop</th>
+                        <th>Payment</th>
+                        <th>Valid Until</th>
+                        <th>Pass Fare</th>
+                        <th>View</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pass in buspasses %}
+                    <tr>
+                        
+                        <td>{{ pass.get_approval_status_display }}</td>
+                        <td>{{ pass.date_applied }}</td>
+                        <td>{{ pass.bus_route }}</td>
+                        <td>{{ pass.from_stop.stop_name }}</td>
+                        <td>{{ pass.to_stop.stop_name }}</td>
+                        <td>{% if pass.payment_status %}
+                            <span class="text-success">Paid</span>
+                            {% if pass.payment_order_id %}
+                                <br><small>Order ID: {{ pass.payment_order_id }}</small>
+                            {% endif %}
+                        {% else %}
+                            <span class="text-danger">Unpaid</span>
+                        {% endif %}</td>
+                        <td>{{ pass.valid_until }}</td>
+                        <td>{{ pass.pass_fare }}</td>
+                        <th><a href="{%url 'application_single' pass.id%}" class="btn btn-outline-dark btn-sm">view</a></th>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+      
+    </div>
+
+
+</section>
+
+{% endblock  %}

@@ -1,0 +1,43 @@
+{% extends 'index.html' %}
+{% block content %}
+
+<style>
+    .content{
+        padding: 20px;
+        margin: auto;
+        margin-top: 100px;
+        border: 1px solid var(--light);
+        border-radius: 20px;
+        max-width: 800px;
+        background: linear-gradient(to bottom right, var(--primary), var(--secondary));
+            }
+</style>
+<div class="container mt-5">
+    <div class="content">
+        <h2>REGISTRATION</h2>
+
+
+      
+        <form method="post">
+            {% csrf_token %}
+           
+            {% csrf_token %}
+            
+            {% for fields in form %}
+                {{fields.label}}:
+
+                {{fields}}
+                <br>
+
+            {% endfor %}
+           <br><br>
+            <button type="submit" class="btn btn-primary">Register</button>
+        </form>
+
+        <br>
+        <br><br>
+        Have an Account <a href="{%url 'signin' %}">Click HERE</a>
+    </div>
+</div>
+{% endblock %}
+   

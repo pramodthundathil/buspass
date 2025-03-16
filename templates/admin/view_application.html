@@ -1,0 +1,137 @@
+{% extends 'admin/index.html' %}
+{% block content %}
+
+{% load static %}
+
+
+<style>
+    .buspass-detail {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: left;
+        width: 80%;
+        margin: auto;
+        padding: 20px;
+        background: #f9f9f9;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .buspass-detail img {
+        max-width: 200px;
+        height: auto;
+        border-radius: 10px;
+        margin-bottom: 10px;
+    }
+
+    .buspass-detail table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .buspass-detail table td {
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .buspass-detail a {
+        color: blue;
+        text-decoration: none;
+    }
+</style>
+
+<div class="buspass-detail mt-5 mb-5">
+    <h2>Bus Pass Details</h2>
+
+    {% if original.photo %}
+    <img src="{{ original.photo.url }}" height="200px" alt="User Photo">
+    {% else %}
+    <p>No Photo Uploaded</p>
+    {% endif %}
+
+    <table>
+        <tr>
+            <td><strong>User:</strong></td>
+            <td>
+                Name:{{ original.user.username }} <br>
+                Address: {{original.user.first_name}} <br>
+                Phone: {{original.user.phone}} <br>
+                email: {{original.user.email}}
+
+
+            </td>
+        </tr>
+        <tr>
+            <td><strong>Route:</strong></td>
+            <td>{{ original.bus_route.route_name }} ({{ original.bus_route.route_number }})</td>
+        </tr>
+        <tr>
+            <td><strong>From Stop:</strong></td>
+            <td>{{ original.from_stop.stop_name }}</td>
+        </tr>
+        <tr>
+            <td><strong>To Stop:</strong></td>
+            <td>{{ original.to_stop.stop_name }}</td>
+        </tr>
+        <tr>
+            <td><strong>Valid From:</strong></td>
+            <td>{{ original.valid_from }}</td>
+        </tr>
+        <tr>
+            <td><strong>Valid Until:</strong></td>
+            <td>{{ original.valid_until }}</td>
+        </tr>
+        <tr>
+            <td><strong>Approval Status:</strong></td>
+            <td>{{ original.approval_status }}</td>
+        </tr>
+        <tr>
+            <td><strong>Payment Status:</strong></td>
+            <td>{{ original.payment_status|yesno:"Paid,Not Paid" }}</td>
+        </tr>
+        <tr>
+            <td><strong>Pass Fare:</strong></td>
+            <td>{{ original.pass_fare }}</td>
+        </tr>
+        <tr>
+            <td><strong>ID Proof:</strong></td>
+            <td>
+                {% if original.id_proof %}
+                <a href="{{ original.id_proof.url }}" target="_blank">View ID Proof</a>
+                {% else %}
+                No ID Proof Uploaded
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+
+            <th>Action</th>
+            <td>
+                <form action="{%url 'admin_approve_pass' original.id %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" value="approve" name="action">
+                    <button type="submit" class="btn btn-sm btn-success">Approve</button>
+                </form>
+                <form action="{%url 'admin_approve_pass' original.id %}" method="post">
+                    {% csrf_token %}
+
+                    <input type="hidden" value="reject" name="action">
+                    <button type="submit" class="btn btn-sm btn-danger">Reject</button>
+                </form>
+                </th>
+        </tr>
+        <tr>
+<th>Bus Pass Pass</th>
+<td>
+<a class="btn btn-sm btn-outline-success" href="{%url 'buspassgenerate' original.id %}" target="_blank">Download Pass</a>
+</td>
+        </tr>
+     
+
+    </table>
+</div>
+
+
+
+{% endblock %}

@@ -1,0 +1,490 @@
+{% extends 'index.html' %}
+{% block content %}
+<div class="payment-container">
+    <div class="payment-header">
+        <h1 class="payment-title">Complete Your Payment</h1>
+        <p class="payment-subtitle">Order #{{ items.order_number|default:"12345" }}</p>
+    </div>
+
+    <div class="payment-content">
+        <!-- Order Summary -->
+        <div class="order-summary">
+            <h2 class="summary-title">Order Summary</h2>
+
+            <div class="order-details">
+                <!-- <div class="order-info">
+                    <div class="info-row">
+                        <span class="info-label">Order Date:</span>
+                        <span class="info-value">{{ order.date|default:"March 4, 2025" }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Shipping Address:</span>
+                        <span class="info-value">{{ order.address|default:"123 Main St, Anytown, ST 12345" }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Contact Email:</span>
+                        <span class="info-value">{{ order.email|default:"customer@example.com" }}</span>
+                    </div>
+                </div> -->
+
+                <div class="order-items">
+                    <!-- <h3 class="items-title">Items </h3>
+                    {% for item in order.order_items.all %}
+                    <div class="item-row">
+                        <span class="item-name">{{item.name}}</span>
+                        <span class="item-price">Rs. {{item.selling_price}}</span>
+                    </div>
+                    {% endfor %} -->
+                    
+
+                    <div class="cost-summary">
+                        <div class="cost-row">
+                            <span>Subtotal</span>
+                            <span></span>
+                        </div>
+                        
+                        <div class="cost-row total">
+                            <span>Total</span>
+                            <span>RS.{{order.pass_fare}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Options -->
+        <div class="payment-options">
+            <h2 class="options-title">Payment Method</h2>
+
+            <div class="payment-tabs">
+                <div class="tab-header">
+                    <button class="tab-btn active" data-tab="credit-card">RazorPay</button>
+                    <!-- <button class="tab-btn" data-tab="paypal">PayPal</button>
+                    <button class="tab-btn" data-tab="bank">Bank Transfer</button> -->
+                </div>
+
+                <div class="tab-content">
+                    <!-- Credit Card Tab -->
+                    <div class="tab-pane active" id="credit-card">
+                        <!-- <form class="payment-form">
+                            <div class="form-row">
+                                <div class="form-group full">
+                                    <label for="card-name">Cardholder Name</label>
+                                    <input type="text" id="card-name" placeholder="Name on card">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group full">
+                                    <label for="card-number">Card Number</label>
+                                    <input type="text" id="card-number" placeholder="1234 5678 9012 3456">
+                                </div>
+                            </div>
+
+                            <div class="form-row two-col">
+                                <div class="form-group">
+                                    <label for="expiry">Expiration Date</label>
+                                    <input type="text" id="expiry" placeholder="MM/YY">
+                                </div>
+                                <div class="form-group">
+                                    <label for="cvv">CVV</label>
+                                    <input type="text" id="cvv" placeholder="123">
+                                </div>
+                            </div>
+
+                            <div class="save-card">
+                                <input type="checkbox" id="save-card">
+                                <label for="save-card">Save card for future purchases</label>
+                            </div> -->
+
+                            <button onclick="makePayment()"  class="pay-now-btn">Pay Rs.{{order.pass_fare}}</button>
+                        <!-- </form> -->
+                    </div>
+
+                    <!-- PayPal Tab -->
+                    <div class="tab-pane" id="paypal">
+                        <div class="payment-method-content">
+                            <div class="payment-logo">
+                                <span class="logo-text">PayPal</span>
+                            </div>
+                            <p class="method-description">
+                                You will be redirected to Razor Pay to complete your payment securely.
+                            </p>
+                            <button class="continue-paypal-btn">Continue with Razor Pay</button>
+                        </div>
+                    </div>
+
+                    <!-- Bank Transfer Tab -->
+                    <div class="tab-pane" id="bank">
+                        <div class="payment-method-content">
+                            <div class="bank-details">
+                                <h3>Bank Transfer Details</h3>
+                                <p>Please use the following details to make your bank transfer:</p>
+
+                                
+
+                                <p class="bank-note">
+                                    Please include your order number as reference. Your order will be processed once
+                                    payment is received.
+                                </p>
+
+                                <button class="confirm-transfer-btn">I've Made the Transfer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="secure-payment">
+                <div class="secure-icon">🔒</div>
+                <p>All transactions are secure and encrypted.</p>
+            </div>
+
+            <!-- <div class="order-actions">
+                <a href="" class="view-orders-link">View My Orders</a>
+                <a href="" class="help-link">Need Help?</a>
+            </div> -->
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Payment Page Styles */
+    .payment-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 30px;
+    }
+
+    .payment-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .payment-title {
+        color: var(--primary);
+        font-size: 32px;
+        margin-bottom: 10px;
+    }
+
+    .payment-subtitle {
+        color: var(--text-color);
+        font-size: 18px;
+        opacity: 0.8;
+    }
+
+    .payment-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+    }
+
+    @media (max-width: 992px) {
+        .payment-content {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* Order Summary Styles */
+    .order-summary {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        padding: 25px;
+    }
+
+    .summary-title,
+    .options-title {
+        color: var(--primary);
+        font-size: 22px;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid var(--light-purple);
+    }
+
+    .order-info {
+        margin-bottom: 30px;
+    }
+
+    .info-row {
+        display: flex;
+        margin-bottom: 12px;
+    }
+
+    .info-label {
+        font-weight: 600;
+        width: 150px;
+        color: var(--text-color);
+    }
+
+    .info-value {
+        color: var(--text-color);
+    }
+
+    .items-title {
+        color: var(--dark-purple);
+        font-size: 18px;
+        margin-bottom: 15px;
+    }
+
+    .item-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--light-purple);
+    }
+
+    .item-name {
+        color: var(--text-color);
+    }
+
+    .item-price {
+        font-weight: 600;
+        color: var(--text-color);
+    }
+
+    .cost-summary {
+        margin-top: 20px;
+    }
+
+    .cost-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        font-size: 15px;
+    }
+
+    .cost-row.total {
+        border-top: 1px solid var(--light-purple);
+        margin-top: 10px;
+        padding-top: 10px;
+        font-weight: 700;
+        font-size: 18px;
+        color: var(--primary);
+    }
+
+    /* Payment Options Styles */
+    .payment-options {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        padding: 25px;
+    }
+
+    .tab-header {
+        display: flex;
+        margin-bottom: 20px;
+        border-bottom: 1px solid var(--light-purple);
+    }
+
+    .tab-btn {
+        padding: 12px 20px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        color: var(--text-color);
+        position: relative;
+        transition: color 0.3s;
+    }
+
+    .tab-btn:hover {
+        color: var(--primary);
+    }
+
+    .tab-btn.active {
+        color: var(--primary);
+        font-weight: 600;
+    }
+
+    .tab-btn.active::after {
+        content: '';
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background-color: var(--primary);
+    }
+
+    .tab-pane {
+        display: none;
+    }
+
+    .tab-pane.active {
+        display: block;
+    }
+
+    /* Credit Card Form */
+    .payment-form {
+        padding: 10px 0;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 15px;
+    }
+
+    .form-group {
+        flex: 1;
+    }
+
+    .form-group.full {
+        width: 100%;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--text-color);
+        font-weight: 500;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid var(--secondary);
+        border-radius: 6px;
+        background-color: var(--light-purple);
+        color: var(--text-color);
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .form-group input:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(115, 93, 165, 0.2);
+        outline: none;
+    }
+
+    .form-row.two-col .form-group {
+        flex: 1;
+    }
+
+    .save-card {
+        display: flex;
+        align-items: center;
+        margin: 15px 0 25px;
+    }
+
+    .save-card input {
+        margin-right: 10px;
+        accent-color: var(--primary);
+    }
+
+    .pay-now-btn,
+    .continue-paypal-btn,
+    .confirm-transfer-btn {
+        width: 100%;
+        padding: 14px;
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .pay-now-btn:hover,
+    .continue-paypal-btn:hover,
+    .confirm-transfer-btn:hover {
+        background-color: var(--dark-purple);
+    }
+
+    /* PayPal Tab */
+    .payment-method-content {
+        padding: 20px 0;
+        text-align: center;
+    }
+
+    .payment-logo {
+        margin-bottom: 20px;
+    }
+
+    .logo-text {
+        font-size: 24px;
+        font-weight: 700;
+        color: #003087;
+    }
+
+    .method-description {
+        margin-bottom: 30px;
+        color: var(--text-color);
+    }
+
+    /* Bank Transfer Tab */
+    .bank-details {
+        text-align: left;
+    }
+
+    .bank-details h3 {
+        color: var(--primary);
+        margin-bottom: 15px;
+    }
+
+    .bank-info {
+        background-color: var(--light-purple);
+        padding: 20px;
+        border-radius: 8px;
+        margin: 20px 0;
+    }
+
+    .bank-row {
+        display: flex;
+        margin: 10px;
+    }
+</style>
+
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<div class="content text-center mt-5" >
+
+    <!-- <button  class="btn btn-warning btn-lg">Pay Now</button> -->
+    <input type="hidden" id="amount" value="{{order.pass_fare}}">
+</div>
+
+
+<script>
+    function makePayment() {
+        let amount = document.getElementById("amount").value;
+        fetch("{%url 'Payment_screen' order.id %}", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: `amount=${amount}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            var options = {
+                key: data.key,
+                amount: data.amount,
+                currency: "INR",
+                name: "E com",
+                order_id: data.order_id,
+                handler: function (response) {
+                    fetch("{%url 'callback' %}", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                        body: `razorpay_order_id=${response.razorpay_order_id}&razorpay_payment_id=${response.razorpay_payment_id}&razorpay_signature=${response.razorpay_signature}`
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.status === "success") {
+                            alert("Payment Successful!");
+                            window.location.href = "{% url 'index' %}";
+                        } else {
+                            alert("Payment Failed!");
+                            window.location.href = "{% url 'index' %}";
+
+                        }
+                    });
+                }
+            };
+            var rzp = new Razorpay(options);
+            rzp.open();
+        });
+    }
+</script>
+
+{% endblock %}

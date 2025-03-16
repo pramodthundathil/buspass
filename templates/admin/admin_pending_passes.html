@@ -1,0 +1,64 @@
+{% extends 'admin/index.html' %}
+{% block content %}
+<div class="contanier">
+    <div class="headder text-center">
+        <h4>Bus Passes</h4>
+
+        <a href="{%url 'admin_approved_passes' %}" class="btn btn-primary">Go To Approved Passes</a>  
+        <br><br>
+        <hr>
+        <h6 class="text-secondary">Pending Bus Passes</h6>
+    </div>
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
+
+
+    <table id="pendingPassesTable" class="display">
+        <thead>
+            <tr>
+                <th>User</th>
+             
+                <th>Approval Status</th>
+                <th>Date Applied</th>
+               <th>Category</th>
+                <th>Bus Route</th>
+                <th>From Stop</th>
+                <th>To Stop</th>
+               
+                <th>Payment Status</th>
+                <th>Pass Fare</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pass in pending_passes %}
+            <tr>
+                <td>{{ pass.user.username }}</td>
+                <td>{{ pass.get_approval_status_display }}</td>
+                <td>{{ pass.date_applied }}</td>
+                <td>{{ pass.get_profession_display }}</td>
+                <td>{{ pass.bus_route }}</td>
+                <td>{{ pass.from_stop.stop_name }}</td>
+                <td>{{ pass.to_stop.stop_name }}</td>
+                
+                <td>{{ pass.payment_status|yesno:"Completed,Pending" }}</td>
+                <td>{{ pass.pass_fare }}</td>
+                <td>
+                    <a href="{%url 'view_application' pass.id %}" class="btn btn-dark">View</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        $(document).ready(function() {
+            $('#pendingPassesTable').DataTable();
+        });
+    </script>
+</div>
+
+{% endblock  %}

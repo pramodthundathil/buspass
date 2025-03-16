@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bus pass</title>
+    <style>
+        .id-card {
+            width: 300px;
+            height: auto;
+            border: 2px solid #000;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: auto;
+        }
+        .qr-code {
+            width:60%;
+            margin: auto;
+            margin-top: 20px;
+
+        }
+        .qr-code img{
+            width: 100%;
+        }
+        .header{
+            display: block;
+            margin: auto;
+        }
+        .address p {
+            line-height: 4px;
+            font-size: x-small;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="id-card">
+        <div class="header">
+            <img src="{{buspass.photo.url}}" width="100px" alt="">
+            <hr>
+        </div>
+        <h4>Name: {{ buspass.user.first_name }} {{ buspass.user..last_name }}</h4>
+        <p>ID Number:<strong>{{ buspass.id }}</strong></p>
+        <p>Route: <strong>{{ buspass.bus_route }}</strong></p>
+        <p>Journey: {{ buspass.from_stop.stop_name }} to {{ buspass.to_stop.stop_name }} </p>
+        <p style="font-size: x-small;"> Validity: {{ buspass.valid_from|date:"M d, Y" }} to {{ buspass.valid_until|date:"M d, Y" }} </p>
+        
+        <!-- Display QR Code -->
+        <div class="qr-code" >
+            <img src="data:image/png;base64,{{ qr_code_image }}" alt="QR Code" />
+        </div>
+        <hr>
+        <div class="address text-center" >
+            <!-- <img src="{%static 'img\adcos_venture.png' %}" width="100px" alt=""> -->
+            <p>Use the pass For same Route Travel</p>
+
+        </div>
+    </div>
+    <!-- Include Required JS Libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+    async function downloadPDF() {
+        const { jsPDF } = window.jspdf;
+        
+        // Select the ID card div for conversion
+        const contentElement = document.querySelector('.id-card');
+        
+        // Use html2canvas to capture the div
+        html2canvas(contentElement, {
+            scale: 2, // Improves resolution
+            useCORS: true // Enables cross-origin images
+        }).then(canvas => {
+            const imgData = canvas.toDataURL('image/png');
+            
+            // Initialize jsPDF
+            const pdf = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: [85.6, 54] // ID card size
+            });
+
+            // Add the image to the PDF
+            pdf.addImage(imgData, 'PNG', 5, 5, 75, 44);
+            
+            // Save the file
+            pdf.save(`BusPass_{{ buspass.user.first_name }}.pdf`);
+        });
+    }
+
+    // Ensure the PDF is generated after the page loads fully
+    window.onload = function () {
+        setTimeout(downloadPDF, 1000); // Small delay to ensure rendering
+    };
+</script>
+
+</body>
+</html>

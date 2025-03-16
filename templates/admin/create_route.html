@@ -1,0 +1,273 @@
+{% extends 'admin/index.html' %}
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">Create New Bus Route</h3>
+        </div>
+        <div class="card-body">
+            <form method="POST" class="route-form">
+                {% csrf_token %}
+                
+                <!-- Route Information -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h4 class="mb-0">Route Information</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.route_number.id_for_label }}" class="form-label">Route Number*</label>
+                                {{ form.route_number  }}
+                                {% if form.route_number.errors %}
+                                    <div class="text-danger">{{ form.route_number.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.route_name.id_for_label }}" class="form-label">Route Name*</label>
+                                {{ form.route_name  }}
+                                {% if form.route_name.errors %}
+                                    <div class="text-danger">{{ form.route_name.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.origin.id_for_label }}" class="form-label">Origin*</label>
+                                {{ form.start_point  }}
+                                {% if form.start_point.errors %}
+                                    <div class="text-danger">{{ form.start_point.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.destination.id_for_label }}" class="form-label">Destination*</label>
+                                {{ form.end_point  }}
+                                {% if form.end_point.errors %}
+                                    <div class="text-danger">{{ form.end_point.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Bus Stops -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">Bus Stops</h4>
+                        <button type="button" class="btn btn-sm btn-success add-stop">Add Stop</button>
+                    </div>
+                    <div class="card-body">
+                        {{ stop_formset.management_form }}
+                        <div id="stops-container">
+                            {% for stop_form in stop_formset %}
+                                <div class="stop-form mb-3 p-3 border rounded">
+                                    {% if forloop.counter0 > 0 %}
+                                        <button type="button" class="btn btn-sm btn-danger remove-stop float-end">Remove</button>
+                                    {% endif %}
+                                    <div class="row">
+                                        <div class="col-md-6 mb-2">
+                                            <label for="{{ stop_form.stop_name.id_for_label }}" class="form-label">Stop Name*</label>
+                                            {{ stop_form.stop_name  }}
+                                            {% if stop_form.stop_name.errors %}
+                                                <div class="text-danger">{{ stop_form.stop_name.errors }}</div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <label for="{{ stop_form.stop_code.id_for_label }}" class="form-label">Stop Code</label>
+                                            {{ stop_form.sequence_number  }}
+                                        </div>
+                                    </div>
+                                    {{ stop_form.id }}
+                                    {{ stop_form.DELETE }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Route Segments -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">Fare Segments</h4>
+                        <button type="button" class="btn btn-sm btn-success add-segment">Add Segment</button>
+                    </div>
+                    <div class="card-body">
+                        {{ segment_formset.management_form }}
+                        <div id="segments-container">
+                            {% for segment_form in segment_formset %}
+                                <div class="segment-form mb-3 p-3 border rounded">
+                                    {% if forloop.counter0 > 0 %}
+                                        <button type="button" class="btn btn-sm btn-danger remove-segment float-end">Remove</button>
+                                    {% endif %}
+                                    <div class="row">
+                                        <div class="col-md-6 mb-2">
+                                            <label for="{{ segment_form.start_stop.id_for_label }}" class="form-label">Start Stop*</label>
+                                            {{ segment_form.start_stop  }}
+                                            {% if segment_form.start_stop.errors %}
+                                                <div class="text-danger">{{ segment_form.start_stop.errors }}</div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <label for="{{ segment_form.end_stop.id_for_label }}" class="form-label">End Stop*</label>
+                                            {{ segment_form.end_stop  }}
+                                            {% if segment_form.end_stop.errors %}
+                                                <div class="text-danger">{{ segment_form.end_stop.errors }}</div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-2">
+                                            <label for="{{ segment_form.fare_amount.id_for_label }}" class="form-label">Fare Amount*</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">$</span>
+                                                {{ segment_form.base_fare  }}
+                                            </div>
+                                            {% if segment_form.base_fare.errors %}
+                                                <div class="text-danger">{{ segment_form.base_fare.errors }}</div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <label for="{{ segment_form.distance.id_for_label }}" class="form-label">Distance (km)</label>
+                                            <div class="input-group">
+                                                {{ segment_form.distance  }}
+                                                <span class="input-group-text">km</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {{ segment_form.id }}
+                                    {{ segment_form.DELETE }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Submit Button -->
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary px-5">Create Route</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for dynamic forms -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Bus Stops Formset
+        const stopContainer = document.getElementById('stops-container');
+        const addStopBtn = document.querySelector('.add-stop');
+        const totalStopForms = document.getElementById('id_stops-TOTAL_FORMS');
+        
+        // Add new stop form
+        addStopBtn.addEventListener('click', function() {
+            const formCount = parseInt(totalStopForms.value);
+            const newForm = stopContainer.querySelector('.stop-form').cloneNode(true);
+            
+            // Update form index
+            newForm.innerHTML = newForm.innerHTML.replace(/stops-0/g, `stops-${formCount}`);
+            newForm.innerHTML = newForm.innerHTML.replace(/stops-0-/g, `stops-${formCount}-`);
+            
+            // Clear form values
+            newForm.querySelectorAll('input[type="text"], input[type="number"]').forEach(input => {
+                input.value = '';
+            });
+            
+            // Add remove button if not present
+            if (!newForm.querySelector('.remove-stop')) {
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.className = 'btn btn-sm btn-danger remove-stop float-end';
+                removeBtn.textContent = 'Remove';
+                newForm.prepend(removeBtn);
+            }
+            
+            stopContainer.appendChild(newForm);
+            totalStopForms.value = formCount + 1;
+            
+            // Add event listener for the new remove button
+            newForm.querySelector('.remove-stop').addEventListener('click', function() {
+                this.parentElement.remove();
+                updateStopForms();
+            });
+        });
+        
+        // Remove stop form
+        document.querySelectorAll('.remove-stop').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.parentElement.remove();
+                updateStopForms();
+            });
+        });
+        
+        // Update form indices after removal
+        function updateStopForms() {
+            const forms = stopContainer.querySelectorAll('.stop-form');
+            totalStopForms.value = forms.length;
+            
+            forms.forEach((form, index) => {
+                form.innerHTML = form.innerHTML.replace(/stops-\d+/g, `stops-${index}`);
+                form.innerHTML = form.innerHTML.replace(/stops-\d+-/g, `stops-${index}-`);
+            });
+        }
+        
+        // Fare Segments Formset
+        const segmentContainer = document.getElementById('segments-container');
+        const addSegmentBtn = document.querySelector('.add-segment');
+        const totalSegmentForms = document.getElementById('id_segments-TOTAL_FORMS');
+        
+        // Add new segment form
+        addSegmentBtn.addEventListener('click', function() {
+            const formCount = parseInt(totalSegmentForms.value);
+            const newForm = segmentContainer.querySelector('.segment-form').cloneNode(true);
+            
+            // Update form index
+            newForm.innerHTML = newForm.innerHTML.replace(/segments-0/g, `segments-${formCount}`);
+            newForm.innerHTML = newForm.innerHTML.replace(/segments-0-/g, `segments-${formCount}-`);
+            
+            // Clear form values
+            newForm.querySelectorAll('input[type="text"], input[type="number"]').forEach(input => {
+                input.value = '';
+            });
+            
+            // Add remove button if not present
+            if (!newForm.querySelector('.remove-segment')) {
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.className = 'btn btn-sm btn-danger remove-segment float-end';
+                removeBtn.textContent = 'Remove';
+                newForm.prepend(removeBtn);
+            }
+            
+            segmentContainer.appendChild(newForm);
+            totalSegmentForms.value = formCount + 1;
+            
+            // Add event listener for the new remove button
+            newForm.querySelector('.remove-segment').addEventListener('click', function() {
+                this.parentElement.remove();
+                updateSegmentForms();
+            });
+        });
+        
+        // Remove segment form
+        document.querySelectorAll('.remove-segment').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.parentElement.remove();
+                updateSegmentForms();
+            });
+        });
+        
+        // Update form indices after removal
+        function updateSegmentForms() {
+            const forms = segmentContainer.querySelectorAll('.segment-form');
+            totalSegmentForms.value = forms.length;
+            
+            forms.forEach((form, index) => {
+                form.innerHTML = form.innerHTML.replace(/segments-\d+/g, `segments-${index}`);
+                form.innerHTML = form.innerHTML.replace(/segments-\d+-/g, `segments-${index}-`);
+            });
+        }
+    });
+</script>
+{% endblock %}

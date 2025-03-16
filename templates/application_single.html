@@ -1,0 +1,129 @@
+{% extends 'index.html' %}
+{% block content %}
+
+
+<section id="features" class="py-5 py-lg-7">
+    
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h3>Bus Pass Details</h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4 text-center mb-3">
+                    {% if buspass.photo %}
+                        <img src="{{ buspass.photo.url }}" alt="User Photo" class="img-fluid rounded mb-3" style="max-height: 200px;">
+                    {% else %}
+                        <div class="alert alert-warning">No photo available</div>
+                    {% endif %}
+                    
+                    <div class="badge {% if buspass.approval_status == 'approved' %}bg-success{% elif buspass.approval_status == 'rejected' %}bg-danger{% else %}bg-warning{% endif %} p-2 mb-3">
+                        Status: {{ buspass.get_approval_status_display }}
+                    </div>
+                    
+                    
+                    {% if buspass.status %}
+                        <div class="badge bg-success p-2">Active</div>
+                        <a class="btn btn-sm btn-outline-success" href="{%url 'buspassgenerate' buspass.id %}" target="_blank">Download Pass</a>
+                    {% else %}
+                        <div class="badge bg-danger p-2">Inactive</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-8">
+                    <table class="table table-bordered">
+                        <tr>
+                            <th>Pass ID</th>
+                            <td>{{ buspass.id }}</td>
+                        </tr>
+                        <tr>
+                            <th>User</th>
+                            <td>{{ buspass.user.username }}</td>
+                        </tr>
+                        <tr>
+                            <th>Profession</th>
+                            <td>{{ buspass.get_profession_display }}</td>
+                        </tr>
+                        <tr>
+                            <th>Route</th>
+                            <td>{{ buspass.bus_route.route_number }} - {{ buspass.bus_route.route_name }}</td>
+                        </tr>
+                        <tr>
+                            <th>Journey</th>
+                            <td>{{ buspass.from_stop.stop_name }} to {{ buspass.to_stop.stop_name }}</td>
+                        </tr>
+                        <tr>
+                            <th>Validity Period</th>
+                            <td>{{ buspass.valid_from|date:"M d, Y" }} to {{ buspass.valid_until|date:"M d, Y" }}</td>
+                        </tr>
+                        <tr>
+                            <th>Fare</th>
+                            <td>₹{{ buspass.pass_fare }}</td>
+                        </tr>
+                        <tr>
+                            <th>Payment Status</th>
+                            <td>
+                                {% if buspass.payment_status %}
+                                    <span class="text-success">Paid</span>
+                                    {% if buspass.payment_order_id %}
+                                        <br><small>Order ID: {{ buspass.payment_order_id }}</small>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="text-danger">Unpaid</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Application Date</th>
+                            <td>{{ buspass.date_applied|date:"M d, Y H:i" }}</td>
+                        </tr>
+                        {% if buspass.date_approved %}
+                        <tr>
+                            <th>Approval Date</th>
+                            <td>{{ buspass.date_approved|date:"M d, Y H:i" }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if buspass.date_rejected %}
+                        <tr>
+                            <th>Rejection Date</th>
+                            <td>{{ buspass.date_rejected|date:"M d, Y H:i" }}</td>
+                        </tr>
+                        {% endif %}
+                    </table>
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <h4>Identification Document</h4>
+                {% if buspass.id_proof %}
+                    <div class="mb-3">
+                        <a href="{{ buspass.id_proof.url }}" class="btn btn-sm btn-outline-primary" target="_blank">
+                            <i class="fa fa-file-pdf"></i> View ID Proof
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="alert alert-warning">No ID proof uploaded</div>
+                {% endif %}
+            </div>
+            
+            <div class="mt-4 d-flex justify-content-between">
+                <a href="{% url 'buss_pass' %}" class="btn btn-secondary">
+                    <i class="fa fa-arrow-left"></i> Back to List
+                </a>
+                
+                
+                
+                {% if not buspass.payment_status %}
+                    <a href="{% url 'Payment_screen' buspass.id %}" class="btn btn-primary">
+                        <i class="fa fa-credit-card"></i> Make Payment
+                    </a>
+                {% endif %}
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+{% endblock %}

@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TransitEase - Modern Bus Pass Management System</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #94a3b8;
+            --gray-light: #f1f5f9;
+            --gray-dark: #334155;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--dark);
+            background-color: var(--light);
+            line-height: 1.6;
+        }
+        
+        /* Typography */
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 700;
+        }
+        
+        .display-1 {
+            font-weight: 800;
+            letter-spacing: -0.03em;
+        }
+        
+        /* Navbar */
+        .navbar {
+            padding: 1rem 0;
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.5rem;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            color: var(--dark);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: var(--primary);
+            background-color: rgba(99, 102, 241, 0.05);
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.1), 0 2px 4px -1px rgba(99, 102, 241, 0.06);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.1), 0 4px 6px -2px rgba(99, 102, 241, 0.05);
+        }
+        
+        .btn-outline-primary {
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            position: relative;
+            padding: 8rem 0 6rem;
+            overflow: hidden;
+            background: linear-gradient(120deg, #f0f9ff 0%, #e0f2fe 100%);
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 60%;
+            height: 100%;
+            background: url("/api/placeholder/1000/800") right top/cover no-repeat;
+            clip-path: polygon(20% 0, 100% 0, 100% 100%, 0% 100%);
+            opacity: 0.1;
+            z-index: 1;
+        }
+        
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: linear-gradient(to bottom right, var(--primary), var(--secondary));
+            opacity: 0.05;
+            bottom: -250px;
+            left: -100px;
+        }
+        
+        .hero-image-wrapper {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero-image {
+            position: relative;
+            border-radius: 1rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            overflow: hidden;
+            transform: perspective(1000px) rotateY(-5deg) rotateX(5deg);
+            transition: all 0.3s ease;
+        }
+        
+        .hero-image:hover {
+            transform: perspective(1000px) rotateY(0deg) rotateX(0deg);
+        }
+        
+        /* Card Styles */
+        .card {
+            border: none;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        /* Feature Icons */
+        .feature-icon {
+            width: 64px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            border-radius: 1rem;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(16, 185, 129, 0.1));
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Pass Type Cards */
+        .pass-type-card {
+            padding: 2rem;
+            border-radius: 1rem;
+            background-color: white;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .pass-type-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 0.25rem;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+            transform-origin: left;
+        }
+        
+        .pass-type-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .pass-type-card:hover {
+            border-color: var(--gray-light);
+            transform: translateY(-8px);
+        }
+        
+        .pass-type-card.popular {
+            border-color: var(--primary);
+            background: linear-gradient(to bottom, white, rgba(99, 102, 241, 0.03));
+        }
+        
+        .popular-badge {
+            position: absolute;
+            top: 1rem;
+            right: -2rem;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 0.25rem 2rem;
+            transform: rotate(45deg);
+            font-size: 0.8rem;
+            font-weight: bold;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* How It Works Section */
+        .step-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(to bottom right, var(--primary), var(--secondary));
+            color: white;
+            border-radius: 50%;
+            font-weight: bold;
+            margin-right: 1rem;
+            position: relative;
+        }
+        
+        .step-number::after {
+            content: '';
+            position: absolute;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary) 30%, transparent);
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .how-it-works-item:last-child .step-number::after {
+            display: none;
+        }
+        
+        /* Testimonial Section */
+        .testimonial-section {
+            background-color: var(--gray-light);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .testimonial-section::before,
+        .testimonial-section::after {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: linear-gradient(to bottom right, var(--primary), var(--secondary));
+            opacity: 0.03;
+        }
+        
+        .testimonial-section::before {
+            top: -150px;
+            right: -100px;
+        }
+        
+        .testimonial-section::after {
+            bottom: -150px;
+            left: -100px;
+        }
+        
+        .testimonial-card {
+            background-color: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+            position: relative;
+        }
+        
+        .testimonial-card::before {
+            content: '"';
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 5rem;
+            font-family: Georgia, serif;
+            color: rgba(99, 102, 241, 0.1);
+            line-height: 1;
+        }
+        
+        .testimonial-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Stats Section */
+        .stats-section {
+            background-color: white;
+        }
+        
+        .stats-card {
+            padding: 2rem;
+            border-radius: 1rem;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.03), rgba(16, 185, 129, 0.03));
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stats-counter {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: 1rem;
+            margin: 3rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            top: -200px;
+            right: -200px;
+        }
+        
+        .cta-section::after {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            bottom: -150px;
+            left: -150px;
+        }
+        
+        /* FAQ Section */
+        .accordion-item {
+            border: none;
+            margin-bottom: 1rem;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+        
+        .accordion-button {
+            font-weight: 600;
+            padding: 1.25rem;
+            background-color: white;
+        }
+        
+        .accordion-button:not(.collapsed) {
+            color: var(--primary);
+            background-color: rgba(99, 102, 241, 0.03);
+        }
+        
+        .accordion-button:focus {
+            box-shadow: none;
+            border-color: rgba(99, 102, 241, 0.5);
+        }
+        
+        /* Footer */
+        .footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 4rem 0 2rem;
+        }
+        
+        .footer-links {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.75rem;
+        }
+        
+        .footer-links a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .social-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
+            color: white;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            margin-right: 0.5rem;
+        }
+        
+        .social-icon:hover {
+            background-color: var(--primary);
+            transform: translateY(-3px);
+        }
+        
+        /* Contact Form */
+        .form-control {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--gray-light);
+        }
+        
+        .form-control:focus {
+            box-shadow: none;
+            border-color: var(--primary);
+        }
+        
+        /* Animations */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .float-animation {
+            animation: float 5s ease-in-out infinite;
+        }
+        
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 5rem 0 3rem;
+            }
+            
+            .hero-image {
+                margin-top: 2rem;
+            }
+            
+            .navbar {
+                padding: 0.5rem 0;
+            }
+            
+            .pass-type-card {
+                margin-bottom: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{%url 'index' %}">TransitEase</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{%url 'index' %}#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{%url 'index' %}#how-it-works">How It Works</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{%url 'buss_pass' %}">Bus Pass</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{%url 'bus_routes' %}">Bus Routes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{%url 'index' %}#contact">Contact</a>
+                    </li>
+
+                    {% if request.user.is_authenticated %}
+                    <li class="nav-item ms-lg-3">
+                        <a class="btn btn-outline-primary" href="{%url 'index' %}">{{request.user.first_name}}</a>
+                    </li>
+                    <li class="nav-item ms-lg-2">
+                        <a class="btn btn-primary" href="{%url 'signout' %}">SignOut</a>
+                    </li>
+
+                    {% else %}
+                    <li class="nav-item ms-lg-3">
+                        <a class="btn btn-outline-primary" href="{%url 'signin' %}">Log In</a>
+                    </li>
+                    <li class="nav-item ms-lg-2">
+                        <a class="btn btn-primary" href="{%url 'signup' %}">Sign Up</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+{% block content%}
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center hero-content">
+                <div class="col-lg-6">
+                    <span class="badge bg-white text-primary mb-3 px-3 py-2 shadow-sm">Next-Gen Transit Solution</span>
+                    <h1 class="display-4 fw-bold mb-4">Get Your Bus Pass <br>In Just A Few Clicks</h1>
+                    <p class="lead mb-4 text-gray-dark">Simplify your daily commute with our streamlined digital bus pass system. No more queues, paperwork, or hassle.</p>
+                    <div class="d-flex flex-wrap gap-3 mb-5">
+                        <a href="#" class="btn btn-primary">Get Started <i class="fas fa-arrow-right ms-2"></i></a>
+                        <a href="#how-it-works" class="btn btn-outline-primary">How It Works</a>
+                    </div>
+                    <div class="d-flex align-items-center gap-4">
+                        <div class="d-flex align-items-center">
+                            <div class="d-flex">
+                                <img src="{%static 'images\user.png' %}" alt="User" class="rounded-circle border border-2 border-white shadow-sm" style="margin-left: -0.5rem;width: 40px;" >
+                                <img src="{%static 'images\user.png' %}" alt="User" class="rounded-circle border border-2 border-white shadow-sm" style="margin-left: -0.5rem;width: 40px;">
+                                <img src="{%static 'images\user.png' %}" alt="User" class="rounded-circle border border-2 border-white shadow-sm" style="margin-left: -0.5rem;width: 40px;">
+                            </div>
+                            <span class="ms-2 text-gray-dark"><strong>10K+</strong> Active users</span>
+                        </div>
+                        <div class="vr"></div>
+                        <div class="d-flex align-items-center">
+                            <div class="text-warning">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <span class="ms-2 text-gray-dark"><strong>4.8/5</strong> Ratings</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 mt-5 mt-lg-0">
+                    <div class="hero-image-wrapper">
+                        <div class="hero-image float-animation">
+                            <img src="{%static 'images\Bus-Pass.png' %}" alt="Bus Pass Dashboard" class="img-fluid">
+                        </div>
+                        <div class="position-absolute top-0 start-100 translate-middle">
+                            <div class="p-3 rounded-pill bg-white shadow" style="width: max-content;">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-success rounded-circle p-1 me-2"><i class="fas fa-check text-white small"></i></div>
+                                    <span class="small fw-bold">Application approved!</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="position-absolute bottom-0 start-0 translate-middle">
+                            <div class="p-3 rounded-pill bg-white shadow" style="width: max-content;">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-primary rounded-circle p-1 me-2"><i class="fas fa-bell text-white small"></i></div>
+                                    <span class="small fw-bold">Renewal reminder</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section py-5">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-3 col-6">
+                    <div class="stats-card h-100">
+                        <div class="stats-counter">15K+</div>
+                        <p class="mb-0 text-gray-dark">Active Users</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stats-card h-100">
+                        <div class="stats-counter">100+</div>
+                        <p class="mb-0 text-gray-dark">Bus Routes</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stats-card h-100">
+                        <div class="stats-counter">98%</div>
+                        <p class="mb-0 text-gray-dark">Satisfaction Rate</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stats-card h-100">
+                        <div class="stats-counter">24/7</div>
+                        <p class="mb-0 text-gray-dark">Customer Support</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-5 py-lg-7">
+        <div class="container">
+            <div class="text-center mb-5">
+                <span class="badge bg-primary-light text-primary px-3 py-2 mb-2">Features</span>
+                <h2 class="fw-bold mb-3">Smart Solutions for Modern Commuters</h2>
+                <p class="text-gray mx-auto" style="max-width: 600px;">Our platform streamlines the entire bus pass experience from application to renewal</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="card h-100 p-4">
+                        <div class="feature-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h5 class="fw-bold mb-3">Seamless Registration</h5>
+                        <p class="text-gray-dark mb-0">Create your account in minutes with simple verification and secure profile management.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card h-100 p-4">
+                        <div class="feature-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <h5 class="fw-bold mb-3">Easy Application</h5>
+                        <p class="text-gray-dark mb-0">Apply for your bus pass online with a simple form and digital document uploads.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card h-100 p-4">
+                        <div class="feature-icon">
+                            <i class="fas fa-sync-alt"></i>
+                        </div>
+                        <h5 class="fw-bold mb-3">Instant Renewals</h5>
+                        <p class="text-gray-dark mb-0">Renew your bus pass with a single click before expiration and save your preferences.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card h-100 p-4">
+                        <div class="feature-icon">
+                            <i class="fas fa-credit-card"></i>
+                        </div>
+                        <h5 class="fw-bold mb-3">Secure Payments</h5>
+                        <p class="text-gray-dark mb-0">Multiple payment options with end-to-end encryption for completely safe transactions.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card h-100 p-4">
+                        <div class="feature-icon">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                        <h5 class="fw-bold mb-3">Smart Notifications</h5>
+                        <p class="text-gray-dark mb-0">Get timely alerts for applications, approvals, renewals, and important updates.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card h-100 p-4">
+                        <div class="feature-icon">
+                            <i class="fas fa-file-upload"></i>
+                        </div>
+                        <h5 class="fw-bold mb-3">Document Management</h5>
+                        <p class="text-gray-dark mb-0">Upload and manage your verification documents securely in your digital locker.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="py-5 py-lg-7 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <span class="badge bg-primary-light text-primary px-3 py-2 mb-2">Process</span>
+                <h2 class="fw-bold mb-3">How TransitEase Works</h2>
+                <p class="text-gray mx-auto" style="max-width: 600px;">Get your bus pass in four simple steps</p>
+            </div>
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-5 mb-lg-0">
+                    <div class="position-relative">
+                        <img src="{%static 'images/application_proccess.png' %}" alt="Application Process" class="img-fluid rounded-3 shadow " style="width: 200px !important;">
+                        <div class="position-absolute top-0 end-0 translate-middle">
+                            <img src="{% static 'images/Cute-Alert-Confirm-Dialog.png' %}" alt="Notification" class="img-fluid rounded-circle border-5 border-white shadow " style="width: 200px !important;">
+                        </div>
+                        <div class="position-absolute bottom-0 start-0 translate-middle">
+                            <img src="{%static 'images/bus_pass.png' %}" alt="App Download" class="img-fluid rounded-circle border-5 border-white shadow " style="width: 200px !important;">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="how-it-works-item">
+                        <div class="step-number">1</div>
+                        <div>
+                            <h5 class="fw-bold">Create Your Account</h5>
+                            <p class="text-gray-dark">Sign up with your email, verify your account, and set up your profile with basic information.</p>
+                        </div>
+                    </div>
+                    <div class="how-it-works-item">
+                        <div class="step-number">2</div>
+                        <div>
+                            <h5 class="fw-bold">Submit Application</h5>
+                            <p class="text-gray-dark">Choose your pass type, upload verification documents, and complete your application.</p>
+                        </div>
+                    </div>
+                    <div class="how-it-works-item">
+                        <div class="step-number">3</div>
+                        <div>
+                            <h5 class="fw-bold">Make Payment</h5>
+                            <p class="text-gray-dark">Securely pay for your bus pass using multiple payment options including cards, UPI, and wallets.</p>
+                        </div>
+                    </div>
+                    <div class="how-it-works-item">
+                        <div class="step-number">4</div>
+                        <div>
+                            <h5 class="fw-bold">Receive Your Pass</h5>
+                            <p class="text-gray-dark">Once approved, download your digital pass or collect your physical card from designated points.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+  <!-- Pass Types Section -->
+  <section id="pass-types" class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Choose Your Pass Type</h2>
+            <p class="text-muted">Select the plan that fits your commuting needs</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="pass-type-card">
+                    <h4 class="mb-3">Student Pass</h4>
+                    <h3 class="mb-4">₹599 <small class="text-muted">/month</small></h3>
+                    <ul class="list-unstyled mb-4">
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Valid for verified students</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Unlimited rides on selected routes</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Special weekend offers</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Student concession benefits</li>
+                    </ul>
+                    <a href="#" class="btn btn-outline-primary w-100">Apply Now</a>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="pass-type-card popular">
+                    <span class="popular-badge">Most Popular</span>
+                    <h4 class="mb-3">Regular Pass</h4>
+                    <h3 class="mb-4">₹899 <small class="text-muted">/month</small></h3>
+                    <ul class="list-unstyled mb-4">
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Open to all commuters</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Unlimited rides on all routes</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Peak hour priority</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Monthly rewards program</li>
+                    </ul>
+                    <a href="#" class="btn btn-primary w-100">Apply Now</a>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="pass-type-card">
+                    <h4 class="mb-3">Employee Pass</h4>
+                    <h3 class="mb-4">₹799 <small class="text-muted">/month</small></h3>
+                    <ul class="list-unstyled mb-4">
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Corporate employee benefits</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Unlimited rides on selected routes</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Tax benefits available</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Corporate subscription options</li>
+                    </ul>
+                    <a href="#" class="btn btn-outline-primary w-100">Apply Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section id="testimonials" class="testimonial-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">What Our Users Say</h2>
+            <p class="text-muted">Discover how CommutePro is transforming daily commutes</p>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="testimonial-card">
+                    <div class="d-flex align-items-center mb-3">
+                        <!-- <img src="/api/placeholder/100/100" alt="User avatar" class="testimonial-avatar"> -->
+                        <div>
+                            <h5 class="mb-0">Ravi Kumar</h5>
+                            <p class="text-muted mb-0">Student</p>
+                        </div>
+                    </div>
+                    <p>"The online application process was incredibly smooth. I got my student pass within 24 hours of applying. No more standing in long queues!"</p>
+                    <div class="text-warning">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="testimonial-card">
+                    <div class="d-flex align-items-center mb-3">
+                        <!-- <img src="/api/placeholder/100/100" alt="User avatar" class="testimonial-avatar"> -->
+                        <div>
+                            <h5 class="mb-0">Priya Singh</h5>
+                            <p class="text-muted mb-0">IT Professional</p>
+                        </div>
+                    </div>
+                    <p>"The renewal reminders are a lifesaver! I never have to worry about my pass expiring unexpectedly. The mobile app makes everything so convenient."</p>
+                    <div class="text-warning">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="testimonial-card">
+                    <div class="d-flex align-items-center mb-3">
+                        <!-- <img src="/api/placeholder/100/100" alt="User avatar" class="testimonial-avatar"> -->
+                        <div>
+                            <h5 class="mb-0">Anand Sharma</h5>
+                            <p class="text-muted mb-0">Senior Citizen</p>
+                        </div>
+                    </div>
+                    <p>"I was worried that an online system would be complicated, but the interface is so user-friendly! The support team was also very helpful with my queries."</p>
+                    <div class="text-warning">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Frequently Asked Questions</h2>
+            <p class="text-muted">Find answers to common questions about our bus pass system</p>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="accordion" id="faqAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                What documents do I need to apply for a bus pass?
+                            </button>
+                        </h2>
+                        <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                The required documents vary by pass type. Students need a valid student ID and address proof. Employees need an employee ID and address proof. Regular commuters need a government ID and address proof. All documents should be in JPG, PNG, or PDF format.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                How long does the verification process take?
+                            </button>
+                        </h2>
+                        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Typically, the verification process takes 24-48 hours after document submission. Once approved, you'll receive a notification, and your pass will be available for download or collection.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                What payment methods are accepted?
+                            </button>
+                        </h2>
+                        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                We accept all major credit and debit cards, UPI payments, net banking, and mobile wallets like Paytm and PhonePe. All transactions are secured with 128-bit encryption.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                                Can I cancel my bus pass and get a refund?
+                            </button>
+                        </h2>
+                        <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Yes, you can cancel your bus pass through the cancellation module. Refunds are processed based on our policy - full refund if canceled within 7 days of issue and no usage, partial refund if canceled before the halfway mark of validity.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                                How do I renew my bus pass?
+                            </button>
+                        </h2>
+                        <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Renewing your pass is simple. Log in to your account, go to the "My Passes" section, and click on the "Renew" button next to your active pass. Choose the duration and proceed with payment. Your pass will be renewed with the new validity period.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section
+<section class="py-5 bg-primary text-white">
+    <div class="container text-center">
+        <h2 class="fw-bold mb-4">Ready to Simplify Your Commute?</h2>
+        <p class="lead mb-4">Join thousands of satisfied commuters who have switched to CommutePro</p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="#" class="btn btn-light btn-lg">Register Now</a>
+            <a href="#contact" class="btn btn-outline-light btn-lg">Contact Us</a>
+        </div>
+    </div>
+</section> -->
+{% endblock %}
+<!-- Contact Section -->
+<!-- Footer Section -->
+
+<footer class="footer mt-5" style="background-color: var(--primary-dark);">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h5 class="fw-bold">TransitEase</h5>
+                <p class="text-muted">Your modern solution for bus pass management. Simplify your commute with our digital platform.</p>
+            </div>
+            <div class="col-md-4">
+                <h5 class="fw-bold">Quick Links</h5>
+                <ul class="footer-links">
+                    <!-- <li><a href="#features">Features</a></li>
+                    <li><a href="#how-it-works">How It Works</a></li>
+                    <li><a href="#pass-types">Pass Types</a></li>
+                    <li><a href="#testimonials">Reviews</a></li>
+                    <li><a href="#contact">Contact</a></li> -->
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5 class="fw-bold">Follow Us</h5>
+                <div class="d-flex">
+                    <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <p class="text-muted mb-0">&copy; 2024 TransitEase. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+{% for message in messages %}
+
+<div class="toast-container position-fixed p-3 " style="right: 0; top:120px;z-index: 2;margin: auto;">
+    <div id="toast-{{ forloop.counter }}" class="toast {{ message.tags }}" role="alert" aria-live="assertive"
+        aria-atomic="true" style="opacity: 1 !important;width:300px !important ;">
+
+        <div class="toast-body">
+            {{ message }}
+        </div>
+    </div>
+</div>
+{% endfor %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Select all alert elements
+        const alerts = document.querySelectorAll('.alert');
+
+        // Loop through each alert
+        alerts.forEach((alert, index) => {
+            setTimeout(() => {
+                // Add fade-out effect
+                alert.style.transition = 'opacity 0.5s ease';
+                alert.style.opacity = '0';
+                setTimeout(() => {
+                    alert.remove(); // Remove the element from the DOM
+                }, 500); // Wait for fade-out to complete
+            }, 3000); // Start fade-out after 3 seconds
+        });
+    });
+    // Display Toast Messages
+    document.addEventListener("DOMContentLoaded", function () {
+        const toasts = document.querySelectorAll('.toast');
+
+        toasts.forEach(toastEl => {
+            const toast = new bootstrap.Toast(toastEl, { delay: 6000 });
+
+            // Play a beep sound when the toast is shown
+            toastEl.addEventListener('shown.bs.toast', () => {
+                const context = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = context.createOscillator();
+                oscillator.type = 'sine'; // Simple beep sound
+                oscillator.frequency.setValueAtTime(880, context.currentTime); // Frequency in Hz
+                oscillator.connect(context.destination);
+                oscillator.start();
+                setTimeout(() => {
+                    oscillator.stop();
+                }, 200); // Play for 200ms
+            });
+
+            toast.show();
+        });
+    });
+
+
+
+
+
+    function updateTime() {
+        const currentDate = new Date();
+
+        // Get time components
+        const hours = currentDate.getHours();
+        const minutes = currentDate.getMinutes();
+        const seconds = currentDate.getSeconds();
+
+        // Format time with leading zeros
+        const formattedTime = `${hours < 10 ? '0' + hours : hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+
+        // Get date components
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth() + 1; // Months are zero-based
+        const day = currentDate.getDate();
+
+        // Format date with leading zeros
+        const formattedDate = `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
+
+        // Update the HTML elements
+        document.getElementById('time').textContent = formattedTime;
+        document.getElementById('date').textContent = formattedDate;
+    }
+
+    // Run the updateTime function every second
+    setInterval(updateTime, 1000);
+
+    // Call updateTime immediately to avoid initial delay
+    updateTime();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+{% extends 'index.html' %}
+{% block content %}
+<style>
+    .content {
+        padding: 20px;
+        margin: auto;
+        margin-top: 100px;
+        border: 1px solid var(--light);
+        border-radius: 20px;
+        max-width: 800px;
+        background: linear-gradient(to bottom right, var(--primary), var(--secondary));
+    }
+</style>
+<div class="container mt-5">
+    <div class="content">
+        <h2>Login</h2>
+        {% for message in messages %}
+        <p class="text-danger">{{message}}</p>
+        {% endfor %}
+        <form method="post">
+            {% csrf_token %}
+
+            <label for="uname">Username</label>
+            <input type="text" id="uname" class="form-control" name="uname" required>
+            <br>
+            <label for="pswd">Password</label>
+            <input type="password" id="pswd" class="form-control" name="pswd" required>
+            <br><br>
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+
+        <br>
+        Don't have an Account <a href="{%url 'signup' %}">Click HERE</a>
+    </div>
+</div>
+{% endblock %}

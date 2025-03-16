@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+{% load static%}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CommutePro - Bus Pass Management System</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{%static 'css/styles.css' %}">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <span class="text-primary">Commute</span>Pro
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#how-it-works">How It Works</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#pass-types">Pass Types</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#testimonials">Testimonials</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Contact</a>
+                    </li>
+                    {% if request.user.is_authenticated %}
+                    <li class="nav-item ms-lg-3">
+                        <a class="btn btn-outline-primary" href="{%url 'signin' %}">My Bus Pass</a>
+                    </li>
+                    <li class="nav-item ms-lg-2">
+                        <a class="btn btn-primary" href="{%url 'signout' %}">Logout</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item ms-lg-3">
+                        <a class="btn btn-outline-primary" href="{%url 'signin' %}">Log In</a>
+                    </li>
+                    <li class="nav-item ms-lg-2">
+                        <a class="btn btn-primary" href="{%url 'signup' %}">Register</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+{% block content %}
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center hero-content">
+                <div class="col-md-6">
+                    <h1 class="display-4 fw-bold mb-4">Get Your Bus Pass in Minutes</h1>
+                    <p class="lead mb-4">Apply, renew, and manage your bus pass online. No more waiting in lines or filling out paper forms.</p>
+                    <div class="d-flex flex-wrap gap-2">
+                        <a href="#" class="btn btn-light btn-lg">Get Started</a>
+                        <a href="#how-it-works" class="btn btn-outline-light btn-lg">Learn More</a>
+                    </div>
+                </div>
+                <div class="col-md-6 mt-4 mt-md-0 text-center hero-image">
+                    <img src="{%static 'images\Bus-Pass.png' %}" alt="Bus Pass Illustration" class="img-fluid rounded shadow">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-4 bg-light">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <div class="stats-counter">15K+</div>
+                    <p class="text-muted">Active Users</p>
+                </div>
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <div class="stats-counter">100+</div>
+                    <p class="text-muted">Bus Routes</p>
+                </div>
+                <div class="col-md-4">
+                    <div class="stats-counter">98%</div>
+                    <p class="text-muted">Satisfaction Rate</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">Why Choose CommutePro?</h2>
+                <p class="text-muted">A modern solution for your daily commute needs</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card feature-card">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon mx-auto">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <h5 class="card-title">Easy Application</h5>
+                            <p class="card-text text-muted">Apply for your bus pass in just a few clicks from your phone or computer.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card feature-card">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon mx-auto">
+                                <i class="fas fa-sync-alt"></i>
+                            </div>
+                            <h5 class="card-title">Quick Renewals</h5>
+                            <p class="card-text text-muted">Renew your existing pass with a single tap before it expires.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card feature-card">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon mx-auto">
+                                <i class="fas fa-credit-card"></i>
+                            </div>
+                            <h5 class="card-title">Secure Payments</h5>
+                            <p class="card-text text-muted">Multiple payment options with end-to-end encryption for safe transactions.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card feature-card">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon mx-auto">
+                                <i class="fas fa-bell"></i>
+                            </div>
+                            <h5 class="card-title">Timely Notifications</h5>
+                            <p class="card-text text-muted">Get alerts and reminders about pass expirations and renewals.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card feature-card">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon mx-auto">
+                                <i class="fas fa-file-upload"></i>
+                            </div>
+                            <h5 class="card-title">Document Management</h5>
+                            <p class="card-text text-muted">Upload and store your documents securely for verification.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card feature-card">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon mx-auto">
+                                <i class="fas fa-history"></i>
+                            </div>
+                            <h5 class="card-title">Transaction History</h5>
+                            <p class="card-text text-muted">Access your complete payment and application history anytime.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">How It Works</h2>
+                <p class="text-muted">Get your bus pass in 4 simple steps</p>
+            </div>
+            <div class="row">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <img src="/api/placeholder/600/500" alt="How It Works Illustration" class="img-fluid rounded shadow">
+                </div>
+                <div class="col-lg-6">
+                    <div class="how-it-works-item">
+                        <div class="step-number">1</div>
+                        <div>
+                            <h5 class="fw-bold">Register an Account</h5>
+                            <p>Create your account with basic information and verify your email address.</p>
+                        </div>
+                    </div>
+                    <div class="how-it-works-item">
+                        <div class="step-number">2</div>
+                        <div>
+                            <h5 class="fw-bold">Apply for a Pass</h5>
+                            <p>Choose your pass type, upload required documents, and submit your application.</p>
+                        </div>
+                    </div>
+                    <div class="how-it-works-item">
+                        <div class="step-number">3</div>
+                        <div>
+                            <h5 class="fw-bold">Make Payment</h5>
+                            <p>Pay securely using credit/debit cards, UPI, or other online payment methods.</p>
+                        </div>
+                    </div>
+                    <div class="how-it-works-item">
+                        <div class="step-number">4</div>
+                        <div>
+                            <h5 class="fw-bold">Get Your Pass</h5>
+                            <p>After verification, download your digital pass or collect a physical card.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pass Types Section -->
+    <section id="pass-types" class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">Choose Your Pass Type</h2>
+                <p class="text-muted">Select the plan that fits your commuting needs</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="pass-type-card">
+                        <h4 class="mb-3">Student Pass</h4>
+                        <h3 class="mb-4">₹599 <small class="text-muted">/month</small></h3>
+                        <ul class="list-unstyled mb-4">
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Valid for verified students</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Unlimited rides on selected routes</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Special weekend offers</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Student concession benefits</li>
+                        </ul>
+                        <a href="#" class="btn btn-outline-primary w-100">Apply Now</a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="pass-type-card popular">
+                        <span class="popular-badge">Most Popular</span>
+                        <h4 class="mb-3">Regular Pass</h4>
+                        <h3 class="mb-4">₹899 <small class="text-muted">/month</small></h3>
+                        <ul class="list-unstyled mb-4">
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Open to all commuters</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Unlimited rides on all routes</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Peak hour priority</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Monthly rewards program</li>
+                        </ul>
+                        <a href="#" class="btn btn-primary w-100">Apply Now</a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="pass-type-card">
+                        <h4 class="mb-3">Employee Pass</h4>
+                        <h3 class="mb-4">₹799 <small class="text-muted">/month</small></h3>
+                        <ul class="list-unstyled mb-4">
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Corporate employee benefits</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Unlimited rides on selected routes</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Tax benefits available</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Corporate subscription options</li>
+                        </ul>
+                        <a href="#" class="btn btn-outline-primary w-100">Apply Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="testimonial-section">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">What Our Users Say</h2>
+                <p class="text-muted">Discover how CommutePro is transforming daily commutes</p>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="testimonial-card">
+                        <div class="d-flex align-items-center mb-3">
+                            <img src="/api/placeholder/100/100" alt="User avatar" class="testimonial-avatar">
+                            <div>
+                                <h5 class="mb-0">Ravi Kumar</h5>
+                                <p class="text-muted mb-0">Student</p>
+                            </div>
+                        </div>
+                        <p>"The online application process was incredibly smooth. I got my student pass within 24 hours of applying. No more standing in long queues!"</p>
+                        <div class="text-warning">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="testimonial-card">
+                        <div class="d-flex align-items-center mb-3">
+                            <img src="/api/placeholder/100/100" alt="User avatar" class="testimonial-avatar">
+                            <div>
+                                <h5 class="mb-0">Priya Singh</h5>
+                                <p class="text-muted mb-0">IT Professional</p>
+                            </div>
+                        </div>
+                        <p>"The renewal reminders are a lifesaver! I never have to worry about my pass expiring unexpectedly. The mobile app makes everything so convenient."</p>
+                        <div class="text-warning">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="testimonial-card">
+                        <div class="d-flex align-items-center mb-3">
+                            <img src="/api/placeholder/100/100" alt="User avatar" class="testimonial-avatar">
+                            <div>
+                                <h5 class="mb-0">Anand Sharma</h5>
+                                <p class="text-muted mb-0">Senior Citizen</p>
+                            </div>
+                        </div>
+                        <p>"I was worried that an online system would be complicated, but the interface is so user-friendly! The support team was also very helpful with my queries."</p>
+                        <div class="text-warning">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">Frequently Asked Questions</h2>
+                <p class="text-muted">Find answers to common questions about our bus pass system</p>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="accordion" id="faqAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                    What documents do I need to apply for a bus pass?
+                                </button>
+                            </h2>
+                            <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    The required documents vary by pass type. Students need a valid student ID and address proof. Employees need an employee ID and address proof. Regular commuters need a government ID and address proof. All documents should be in JPG, PNG, or PDF format.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                    How long does the verification process take?
+                                </button>
+                            </h2>
+                            <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Typically, the verification process takes 24-48 hours after document submission. Once approved, you'll receive a notification, and your pass will be available for download or collection.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                    What payment methods are accepted?
+                                </button>
+                            </h2>
+                            <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    We accept all major credit and debit cards, UPI payments, net banking, and mobile wallets like Paytm and PhonePe. All transactions are secured with 128-bit encryption.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                                    Can I cancel my bus pass and get a refund?
+                                </button>
+                            </h2>
+                            <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Yes, you can cancel your bus pass through the cancellation module. Refunds are processed based on our policy - full refund if canceled within 7 days of issue and no usage, partial refund if canceled before the halfway mark of validity.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                                    How do I renew my bus pass?
+                                </button>
+                            </h2>
+                            <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Renewing your pass is simple. Log in to your account, go to the "My Passes" section, and click on the "Renew" button next to your active pass. Choose the duration and proceed with payment. Your pass will be renewed with the new validity period.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-5 bg-primary text-white">
+        <div class="container text-center">
+            <h2 class="fw-bold mb-4">Ready to Simplify Your Commute?</h2>
+            <p class="lead mb-4">Join thousands of satisfied commuters who have switched to CommutePro</p>
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                <a href="#" class="btn btn-light btn-lg">Register Now</a>
+                <a href="#contact" class="btn btn-outline-light btn-lg">Contact Us</a>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+    <!-- Contact Section -->
+    <section id="contact" class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">Get in Touch</h2>
+                <p class="text-muted">We're here to help with any questions or concerns</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-5">
+                    <h4 class="mb-4">Contact Information</h4>
+                    <div class="mb-4">
+                        <p><i class="fas fa-map-marker-alt me-2 text-primary"></i> 123 Transport Plaza, Metro Station, City Center - 400001</p>
+                        <p><i class="fas fa-phone me-2 text-primary"></i> +91 9876543210</p>
+                        <p><i class="fas fa-envelope me-2 text-primary"></i> support@commutepro.com</p>
+                        <p><i class="fas fa-clock me-2 text-primary"></i> Monday-Saturday: 9:00 AM - 6:00 PM</p>
+                    </div>
+                    <h5 class="mb-3">Follow Us</h5>
+                    <div class="d-flex">
+                        <a href="#" class="me-3 text-primary"><i class="fab fa-facebook-f fa-lg"></i></a>
+                        <a href="#" class="me-3 text-primary"><i class="fab fa-twitter fa-lg"></i></a>
+                        <a href="#" class="me-3 text-primary"><i class="fab fa-instagram fa-lg"></i></a>
+                        <a href="#" class="me-3 text-primary"><i class="fab fa-linkedin-in fa-lg"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    <div class="">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

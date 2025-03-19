@@ -1,0 +1,97 @@
+{% extends 'admin/index.html' %}
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">Create Stops on Route {{route}}</h3>
+            {% if messages %}
+            <div class="alert alert-info mt-2">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        <div class="card-body">
+            <form method="POST">
+                {% csrf_token %}
+
+                {{ form.as_p }}
+
+                <button type="submit" class="btn btn-info">Add Stop</button>
+            </form>
+
+        </div>
+    </div>
+</div>
+  <!-- Route Visualization -->
+  <div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Route Path Visualization</h6>
+    </div>
+    <div class="card-body">
+        <div class="route-visualization">
+            <div class="d-flex align-items-center route-line">
+                {% for stop in route.stops.all %}
+                    <div class="route-stop">
+                        <div class="stop-point {% if forloop.first %}start-point{% elif forloop.last %}end-point{% endif %}"></div>
+                        <div class="stop-name">{{ stop.stop_name }}</div>
+                        <div class="stop-number">Stop {{ stop.sequence_number }}</div>
+                    </div>
+                    {% if not forloop.last %}
+                        <div class="route-segment">
+                            <div class="segment-line"></div>
+                            {% for segment in segments %}
+                                {% if segment.start_stop.id == stop.id %}
+                                    <div class="segment-info">
+                                        <div>{{ segment.distance }} km</div>
+                                        <div>₹{{ segment.base_fare }}</div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+     .route-visualization {
+        overflow-x: auto;
+        padding: 20px 0;
+    }
+    .route-line {
+        min-width: 100%;
+    }
+    .route-stop {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 10px;
+        min-width: 100px;
+    }
+    .stop-point {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background-color: #4e73df;
+        margin-bottom: 5px;
+    }
+    .start-point {
+        background-color: #1cc88a;
+    }
+    .end-point {
+        background-color: #e74a3b;
+    }
+    .stop-name {
+        font-weight: bold;
+        text-align: center;
+    }
+    .stop-number {
+        font-size: 12px;
+        color: #6c757d;
+    }
+</style>
+{% endblock %}

@@ -185,32 +185,66 @@ def route_detail(request, route_id):
     })
 
 
+# @login_required(login_url='signin')
+# def create_route(request):
+#     """Create a new bus route with stops and fare segments"""
+#     if request.method == 'POST':
+#         form = RouteForm(request.POST)
+#         stop_formset = BusStopFormSet(request.POST, prefix='stops')
+#         segment_formset = RouteSegmentFormSet(request.POST, prefix='segments')
+        
+#         if form.is_valid() and stop_formset.is_valid() and segment_formset.is_valid():
+#             # Save the route
+#             route = form.save()
+            
+#             # Save stops
+#             stops = stop_formset.save(commit=False)
+#             for stop in stops:
+#                 stop.route = route
+#                 stop.save()
+            
+#             # Save segments
+#             segments = segment_formset.save(commit=False)
+#             for segment in segments:
+#                 segment.route = route
+#                 segment.save()
+            
+#             messages.success(request, f"Route {route.route_number} created successfully!")
+#             return redirect('route_detail', route_id=route.id)
+#     else:
+#         form = RouteForm()
+#         stop_formset = BusStopFormSet(prefix='stops')
+#         segment_formset = RouteSegmentFormSet(prefix='segments')
+    
+#     return render(request, 'admin/create_route.html', {
+#         'form': form,
+#         'stop_formset': stop_formset,
+#         'segment_formset': segment_formset
+#     })
+
+
 @login_required(login_url='signin')
 def create_route(request):
     """Create a new bus route with stops and fare segments"""
     if request.method == 'POST':
         form = RouteForm(request.POST)
+        
+        # Don't pass instance to formsets yet - we need to create the route first
         stop_formset = BusStopFormSet(request.POST, prefix='stops')
         segment_formset = RouteSegmentFormSet(request.POST, prefix='segments')
         
-        if form.is_valid() and stop_formset.is_valid() and segment_formset.is_valid():
+        if form.is_valid():
             # Save the route
             route = form.save()
-            
-            # Save stops
-            stops = stop_formset.save(commit=False)
-            for stop in stops:
-                stop.route = route
-                stop.save()
-            
-            # Save segments
-            segments = segment_formset.save(commit=False)
-            for segment in segments:
-                segment.route = route
-                segment.save()
-            
+            route.save()
             messages.success(request, f"Route {route.route_number} created successfully!")
             return redirect('route_detail', route_id=route.id)
+        else:
+            # If form validation failed, show error messages
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"Route form error - {field}: {error}")
+            
     else:
         form = RouteForm()
         stop_formset = BusStopFormSet(prefix='stops')
@@ -223,16 +257,64 @@ def create_route(request):
     })
 
 
+
+@login_required(login_url='signin')
+def add_stops(request, pk):
+    route = get_object_or_404(BusRoute, id=pk)
+    form = BusStopForm()
+    if request.method == "POST":
+        form = BusStopForm(request.POST)
+        if form.is_valid():
+            stop = form.save(commit=False)
+            stop.route = route
+            try:
+                stop.save()
+            except:
+                messages.success(request,"Please Add Stops in Sequence")
+                return redirect("add_stops",pk = route.id)
+
+            messages.success(request,"Stop added successfully")
+            return redirect("route_detail",route_id = route.id)
+        else:
+            messages.error(request,form.errors)
+            return redirect("add_stops",pk = route.id)
+
+
+    context = {
+        "form":form,
+        "route":route
+    }
+    return render(request,"admin/add_stops.html",context)
+
 @login_required(login_url='signin')
 def edit_route(request, route_id):
     """Edit an existing route with its stops and segments"""
     route = get_object_or_404(BusRoute, id=route_id)
     
+    # Create a custom formset class that passes the route to each form
+    class RouteSegmentFormSetWithRoute(forms.BaseModelFormSet):
+        def __init__(self, *args, **kwargs):
+            self.route = route
+            super().__init__(*args, **kwargs)
+            
+        def _construct_form(self, i, **kwargs):
+            kwargs['route'] = self.route
+            return super()._construct_form(i, **kwargs)
+    
+    # Create the formset factory with our custom formset class
+    SegmentFormSet = forms.modelformset_factory(
+        RouteSegment,
+        form=RouteSegmentForm,
+        formset=RouteSegmentFormSetWithRoute,
+        extra=2,
+        can_delete=True,
+    )
+    
     if request.method == 'POST':
         form = RouteForm(request.POST, instance=route)
         stop_formset = BusStopFormSet(request.POST, prefix='stops', queryset=BusStop.objects.filter(route=route))
-        segment_formset = RouteSegmentFormSet(request.POST, prefix='segments', 
-                                           queryset=RouteSegment.objects.filter(route=route))
+        segment_formset = SegmentFormSet(request.POST, prefix='segments', 
+                                       queryset=RouteSegment.objects.filter(route=route))
         
         if form.is_valid() and stop_formset.is_valid() and segment_formset.is_valid():
             # Save the route first
@@ -263,8 +345,8 @@ def edit_route(request, route_id):
     else:
         form = RouteForm(instance=route)
         stop_formset = BusStopFormSet(prefix='stops', queryset=BusStop.objects.filter(route=route))
-        segment_formset = RouteSegmentFormSet(prefix='segments', 
-                                           queryset=RouteSegment.objects.filter(route=route))
+        segment_formset = SegmentFormSet(prefix='segments', 
+                                       queryset=RouteSegment.objects.filter(route=route))
     
     return render(request, 'admin/edit_route.html', {
         'form': form,
@@ -272,7 +354,6 @@ def edit_route(request, route_id):
         'segment_formset': segment_formset,
         'route': route
     })
-
 
 # Bus Pass Application Views
 @login_required(login_url='signin')

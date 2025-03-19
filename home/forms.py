@@ -97,9 +97,16 @@ class RouteSegmentForm(forms.ModelForm):
         fields = ['start_stop', 'end_stop', 'base_fare', 'distance']
 
     def __init__(self, *args, **kwargs):
+        route = kwargs.pop('route', None)
         super().__init__(*args, **kwargs)
+        
         for field in self.fields:
             self.fields[field].widget.attrs.update({'class': 'form-control'})
+        
+        # Filter stops to only show those from the current route
+        if route:
+            self.fields['start_stop'].queryset = BusStop.objects.filter(route=route)
+            self.fields['end_stop'].queryset = BusStop.objects.filter(route=route)
 
     def clean(self):
         cleaned_data = super().clean()
@@ -116,7 +123,7 @@ class RouteSegmentForm(forms.ModelForm):
                 self.add_error('end_stop', 'End stop must immediately follow the start stop')
 
         return cleaned_data
-
+    
 
 # Create formsets for managing multiple stops and segments
 BusStopFormSet = forms.modelformset_factory(

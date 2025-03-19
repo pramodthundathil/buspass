@@ -101,7 +101,7 @@ class BusRoute(models.Model):
 
 
 class BusStop(models.Model):
-    route = models.ForeignKey(BusRoute, on_delete=models.CASCADE)
+    route = models.ForeignKey(BusRoute, on_delete=models.CASCADE, related_name="stops")
     stop_name = models.CharField(max_length=100)
     sequence_number = models.PositiveIntegerField()
     

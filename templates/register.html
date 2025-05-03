@@ -15,6 +15,11 @@
 <div class="container mt-5">
     <div class="content">
         <h2>REGISTRATION</h2>
+        {% for message in messages %}
+        <p class="text-danger">{{message}}</p>
+        {% endfor %}
+        <p class="text-danger">{{form.errors}}</p>
+
 
 
       
@@ -39,5 +44,20 @@
         Have an Account <a href="{%url 'signin' %}">Click HERE</a>
     </div>
 </div>
+<script>
+    document.getElementById("phone").addEventListener("input", function (e) {
+        let value = e.target.value;
+    
+        // Remove any non-digit characters (in case of copy-paste)
+        value = value.replace(/\D/g, '');
+    
+        // Trim to 10 digits
+        if (value.length > 10) {
+            value = value.slice(0, 10);
+        }
+    
+        e.target.value = value;
+    });
+    </script>
 {% endblock %}
    

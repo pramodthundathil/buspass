@@ -13,7 +13,7 @@ class UserAddForm(UserCreationForm):
 
         widgets = {
             "username":forms.TextInput(attrs={"class":"form-control", "placeholder":"Username"}),
-            "phone":forms.NumberInput(attrs={"class":"form-control","placeholder":"Phone Number"}),
+            "phone":forms.NumberInput(attrs={"class":"form-control","placeholder":"Phone Number","id":"phone"}),
             "pro_pic":forms.FileInput(attrs={"class":"form-control"}),
             "address":forms.Textarea(attrs={"class":"form-control"}),
             "email":forms.EmailInput(attrs={"class":"form-control","placeholder":"Email"}),
@@ -189,3 +189,16 @@ class BusPassApplicationForm(forms.ModelForm):
                 self.add_error('to_stop', 'To stop must come after from stop')
 
         return cleaned_data
+
+
+from django import forms
+from .models import Feedbacks
+
+class FeedbackForm(forms.ModelForm):
+    class Meta:
+        model = Feedbacks
+        fields = ['subject', 'message']
+        widgets = {
+            'subject': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter subject'}),
+            'message': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Enter your message'}),
+        }

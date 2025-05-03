@@ -44,7 +44,12 @@ urlpatterns = [
     
     path('Payment_screen/<int:pk>/', views.Payment_screen, name='Payment_screen'),
     path('callback', views.callback, name='callback'),
-    path("buspassgenerate/<int:pk>",views.buspassgenerate,name="buspassgenerate")
+    path("buspassgenerate/<int:pk>",views.buspassgenerate,name="buspassgenerate"),
+
+    path("Complaints",views.Complaints,name="Complaints"),
+
+    path("Complaints_admin", views.Complaints_admin, name="Complaints_admin"),
+    path('update_feedback/<int:feedback_id>/', views.update_feedback, name='update_feedback'),
     
    
 

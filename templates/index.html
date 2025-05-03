@@ -515,11 +515,16 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{%url 'bus_routes' %}">Bus Routes</a>
                     </li>
+
+                    
                     <li class="nav-item">
                         <a class="nav-link" href="{%url 'index' %}#contact">Contact</a>
                     </li>
 
                     {% if request.user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{%url 'Complaints' %}">Complaints</a>
+                    </li>
                     <li class="nav-item ms-lg-3">
                         <a class="btn btn-outline-primary" href="{%url 'index' %}">{{request.user.first_name}}</a>
                     </li>

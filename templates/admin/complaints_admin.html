@@ -1,0 +1,86 @@
+{% extends 'admin/index.html' %}
+{% block content %}
+<style>
+    .modal {
+    z-index: 1055 !important;
+}
+.modal-backdrop {
+    z-index: 1050 !important;
+}
+</style>
+
+<div class="contanier mt-5">
+    <div class="headder text-center">
+        <h4>Complaints </h4>
+
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>User</th>
+                    <th>Subject</th>
+                    <th>Message</th>
+                    <th>Status</th>
+                    <th>Response</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for feedback in complaints %}
+                <tr>
+                    <td>{{ feedback.date }}</td>
+                    <td>{{ feedback.user.username }}</td>
+                    <td>{{ feedback.subject }}</td>
+                    <td>{{ feedback.message }}</td>
+                    <td>{{ feedback.status|yesno:"Resolved,Pending" }}</td>
+                    <td>{{ feedback.response }}</td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#updateModal{{ feedback.id }}">
+                            Update
+                        </button>
+
+                        
+                    </td>
+                </tr>
+
+                <!-- Modal -->
+                <div class="modal fade" id="updateModal{{ feedback.id }}" tabindex="-1" aria-labelledby="updateModalLabel{{ feedback.id }}" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="updateModalLabel{{ feedback.id }}">Update Feedback</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form method="post" action="{% url 'update_feedback' feedback.id %}">
+                                {% csrf_token %}
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label for="status{{ feedback.id }}" class="form-label">Status</label>
+                                        <select class="form-select" id="status{{ feedback.id }}" name="status">
+                                            <option value="True" >Resolved</option>
+                                            <option value="False">Pending</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="response{{ feedback.id }}" class="form-label">Response</label>
+                                        <textarea class="form-control" id="response{{ feedback.id }}" name="response" rows="3">{{ feedback.response }}</textarea>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </tbody>
+        </table>
+
+
+
+    </div>
+</div>
+{% endblock %}

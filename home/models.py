@@ -197,3 +197,13 @@ class BusPass(models.Model):
 
         self.valid_until = self.valid_from + timedelta(days=self.pass_validity_in_days)
         super().save(*args, **kwargs)
+
+
+class Feedbacks(models.Model):
+    date = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='complaints')
+    subject = models.CharField(max_length=100)
+    message = models.TextField()    
+    status = models.BooleanField(default=False)
+    response = models.TextField(null=True, blank=True)

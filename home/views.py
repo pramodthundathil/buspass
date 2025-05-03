@@ -386,7 +386,7 @@ def buspass_apply(request):
             
             bus_pass.valid_from = today
             # bus_pass.valid_until = valid_until
-            # bus_pass.save()
+            bus_pass.save()
             
             messages.success(request, "Bus pass application submitted successfully!")
             return redirect('Payment_screen', pk = bus_pass.id )
@@ -488,7 +488,7 @@ def admin_approve_pass(request, pass_id):
 def get_route_stops(request, route_id):
     try:
         bus_route = BusRoute.objects.get(id=route_id)
-        stops = bus_route.busstop_set.order_by('sequence_number').values('id', 'stop_name')
+        stops = bus_route.stops.all().order_by('sequence_number').values('id', 'stop_name')
         return JsonResponse(list(stops), safe=False)
     except BusRoute.DoesNotExist:
         return JsonResponse({'error': 'Route not found'}, status=404)
@@ -642,3 +642,53 @@ def buspassgenerate(request, pk):
 
     return render(request, 'id_card.html', context)
 
+
+
+def Complaints(request):
+    form = FeedbackForm()
+    feedback = Feedbacks.objects.filter(user = request.user)
+    if request.method == "POST":
+        form = FeedbackForm(request.POST)
+        if form.is_valid():
+            complaint = form.save(commit=False)
+            complaint.user = request.user
+            complaint.save()
+            messages.success(request,"Complaint Submitted Successfully")
+            return redirect("Complaints")
+        else:
+            messages.error(request,form.errors)
+            return redirect("Complaints")
+    context = {"form":form,"feedbacks":feedback}
+    return render(request,"complaints.html",context)
+
+
+@login_required(login_url='signin')
+def Complaints_admin(request):
+    """Admin view to manage user complaints"""
+    if not request.user.is_staff:
+        messages.error(request, "You do not have permission to access this page.")
+        return redirect('home')
+
+    complaints = Feedbacks.objects.all().order_by('-date')
+    context = {
+        "complaints": complaints
+    }
+    return render(request, "admin/complaints_admin.html", context)
+
+
+
+@login_required(login_url='signin')
+def update_feedback(request, feedback_id):
+    """Update an existing feedback/complaint"""
+    feedback = get_object_or_404(Feedbacks, id=feedback_id)
+    
+    if request.method == "POST":
+   
+        feedback.status = request.POST.get('status')
+        feedback.response = request.POST.get('response')
+        feedback.save()
+        messages.success(request, "Feedback updated successfully.")
+        return redirect("Complaints_admin")
+        
+    
+       
